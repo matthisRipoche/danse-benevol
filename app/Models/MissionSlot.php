@@ -58,4 +58,18 @@ class MissionSlot extends Model
     {
         return max(0, $this->capacity - $this->volunteerAssignments()->count());
     }
+
+    /**
+     * The gauge status used to color-code availability: 'disponible', 'presque-complet' or 'complet'.
+     */
+    public function gaugeStatus(): string
+    {
+        $remaining = $this->remainingCapacity();
+
+        if ($remaining === 0) {
+            return 'complet';
+        }
+
+        return $remaining / $this->capacity > 0.5 ? 'disponible' : 'presque-complet';
+    }
 }

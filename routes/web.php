@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\PlanningController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,4 +30,11 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');
     Route::post('/codes-invitation', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
     Route::post('/codes-invitation/{invitationCode}/revoquer', [InvitationCodeController::class, 'revoke'])->name('invitation-codes.revoke');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/mon-planning', [PlanningController::class, 'index'])->name('planning.index');
+    Route::post('/mon-planning/creneaux/{missionSlot}', [PlanningController::class, 'reserve'])->name('planning.reserve');
+    Route::delete('/mon-planning/creneaux/{missionSlot}', [PlanningController::class, 'cancel'])->name('planning.cancel');
+    Route::post('/mon-planning/valider', [PlanningController::class, 'finalize'])->name('planning.finalize');
 });
