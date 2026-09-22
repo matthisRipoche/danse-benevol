@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Admin\RestrictedMissionController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -42,6 +43,8 @@ Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
 Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/codes-invitation', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
     Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');
     Route::post('/codes-invitation', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');

@@ -12,18 +12,14 @@
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
         <div class="mx-auto max-w-3xl p-6">
+            @include('admin.partials.nav')
+
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-lg font-semibold">Codes d'invitation</h1>
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('admin.restricted-missions.index') }}" class="text-sm underline">
-                        Postes restreints
-                    </a>
-                    <a href="{{ route('admin.invitation-codes.create') }}"
-                        class="rounded-md bg-[#1b1b18] px-4 py-2 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
-                        Nouveau code
-                    </a>
-                    @include('partials.logout-button')
-                </div>
+                <a href="{{ route('admin.invitation-codes.create') }}"
+                    class="rounded-md bg-[#1b1b18] px-4 py-2 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
+                    Nouveau code
+                </a>
             </div>
 
             @if (session('status'))

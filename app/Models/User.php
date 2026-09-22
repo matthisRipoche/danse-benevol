@@ -94,6 +94,6 @@ class User extends Authenticatable
      */
     public function homeRouteName(): string
     {
-        return $this->role === 'admin' ? 'admin.invitation-codes.index' : 'planning.index';
+        return $this->role === 'admin' ? 'admin.dashboard' : 'planning.index';
     }
 }
