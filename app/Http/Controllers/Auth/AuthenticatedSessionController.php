@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.invitation-codes.index');
         }
 
-        return redirect('/');
+        return redirect()->route('planning.index');
     }
 
     /**

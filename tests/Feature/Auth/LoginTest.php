@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('a user can log in with correct credentials', function () {
+test('a volunteer is redirected to their planning after login', function () {
     $user = User::factory()->create();
 
     $response = $this->post('/connexion', [
@@ -13,7 +13,7 @@ test('a user can log in with correct credentials', function () {
         'password' => 'password',
     ]);
 
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('planning.index'));
     $this->assertAuthenticatedAs($user);
 });
 

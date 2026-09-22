@@ -31,7 +31,7 @@ test('a volunteer can register with a valid pending invitation code', function (
 
     $response = $this->post('/inscription', validRegistrationPayload($code));
 
-    $response->assertRedirect(route('register.confirmation'));
+    $response->assertRedirect(route('planning.index'));
     $this->assertAuthenticated();
 
     $user = User::where('email', 'camille.dupont@example.com')->firstOrFail();

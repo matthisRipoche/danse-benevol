@@ -14,10 +14,6 @@ Route::get('/inscription', [RegisteredUserController::class, 'create'])->name('r
 Route::post('/inscription', [RegisteredUserController::class, 'store'])
     ->middleware('throttle:6,1');
 
-Route::get('/inscription/bienvenue', function () {
-    return view('auth.registered');
-})->middleware('auth')->name('register.confirmation');
-
 Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
     ->middleware('throttle:6,1');
