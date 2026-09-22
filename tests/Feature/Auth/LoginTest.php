@@ -18,7 +18,7 @@ test('a volunteer is redirected to their planning after login', function () {
     $this->assertAuthenticatedAs($user);
 });
 
-test('an admin is redirected to the invitation codes list after login', function () {
+test('an admin is redirected to the dashboard after login', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->post('/connexion', [
@@ -26,7 +26,7 @@ test('an admin is redirected to the invitation codes list after login', function
         'password' => 'password',
     ]);
 
-    $response->assertRedirect(route('admin.invitation-codes.index'));
+    $response->assertRedirect(route('admin.dashboard'));
 });
 
 test('login fails with a wrong password', function () {
@@ -68,12 +68,12 @@ test('an already authenticated volunteer visiting the login page is redirected t
     $response->assertRedirect(route('planning.index'));
 });
 
-test('an already authenticated admin visiting the login page is redirected to the invitation codes list', function () {
+test('an already authenticated admin visiting the login page is redirected to the dashboard', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->get('/connexion');
 
-    $response->assertRedirect(route('admin.invitation-codes.index'));
+    $response->assertRedirect(route('admin.dashboard'));
 });
 
 test('the dev admin login button is hidden outside the local environment', function () {
@@ -99,7 +99,7 @@ test('the dev admin login button and route work in the local environment', funct
     $response = $this->withoutMiddleware(PreventRequestForgery::class)
         ->post('/connexion/dev-admin');
 
-    $response->assertRedirect(route('admin.invitation-codes.index'));
+    $response->assertRedirect(route('admin.dashboard'));
     $this->assertAuthenticatedAs($admin);
 });
 

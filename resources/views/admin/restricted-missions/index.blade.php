@@ -12,15 +12,9 @@
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
         <div class="mx-auto max-w-2xl p-4 sm:p-6">
-            <div class="mb-6 flex items-center justify-between">
-                <h1 class="text-lg font-semibold">Postes restreints — {{ $edition->name }}</h1>
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('admin.invitation-codes.index') }}" class="text-sm underline">
-                        Codes d'invitation
-                    </a>
-                    @include('partials.logout-button')
-                </div>
-            </div>
+            @include('admin.partials.nav')
+
+            <h1 class="mb-6 text-lg font-semibold">Postes restreints — {{ $edition->name }}</h1>
 
             @if (session('status'))
                 <div class="mb-4 rounded-md border border-green-300 bg-green-50 p-4 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">

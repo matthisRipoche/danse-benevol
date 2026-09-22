@@ -19,10 +19,10 @@ test('an authenticated volunteer visiting the app root is redirected to their pl
     $response->assertRedirect(route('planning.index'));
 });
 
-test('an authenticated admin visiting the app root is redirected to the invitation codes list', function () {
+test('an authenticated admin visiting the app root is redirected to the dashboard', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->get('/');
 
-    $response->assertRedirect(route('admin.invitation-codes.index'));
+    $response->assertRedirect(route('admin.dashboard'));
 });
