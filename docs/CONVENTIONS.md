@@ -60,3 +60,11 @@ Exemples :
   - **Summary** : liste à puces de ce qui change et pourquoi.
   - **Test plan** : checklist de ce qui a été vérifié (tests, Pint, vérifications manuelles).
 - Mettre à jour `docs/TACHES.md` dans la même PR si elle fait avancer une tâche du suivi.
+
+## Merge : squash uniquement
+
+Le dépôt GitHub est configuré pour n'autoriser que le **squash merge** (merge commit et rebase merge désactivés) ; la branche source est supprimée automatiquement après merge.
+
+- Tous les commits d'une PR sont donc écrasés en un seul commit sur `main` au moment du merge.
+- Le message du commit de squash doit suivre le même format `type(scope): description` — reprendre le titre de la PR, GitHub le propose par défaut.
+- Pas besoin de soigner l'historique intermédiaire sur la branche (des commits type "wip" ou "fix typo" sont acceptables), seul le résultat final compte.
