@@ -17,10 +17,10 @@
             <h1 class="mb-6 text-lg font-semibold">Bénévoles — {{ $edition->name }}</h1>
 
             <form method="GET" action="{{ route('admin.volunteers.index') }}" class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                <input type="text" name="nom" value="{{ request('nom') }}" placeholder="Nom"
+                <input type="text" name="prenom" value="{{ request('prenom') }}" placeholder="Prénom"
                     class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
 
-                <input type="text" name="prenom" value="{{ request('prenom') }}" placeholder="Prénom"
+                <input type="text" name="nom" value="{{ request('nom') }}" placeholder="Nom"
                     class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
 
                 <select name="statut" class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
