@@ -1,10 +1,12 @@
 <?php
 
+use App\Mail\InvitationCodeMail;
 use App\Models\AuditLog;
 use App\Models\Edition;
 use App\Models\InvitationCode;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 
 uses(RefreshDatabase::class);
 
@@ -21,6 +23,8 @@ test('an admin can view the list of invitation codes for the active edition', fu
 });
 
 test('an admin can create an invitation code for the active edition', function () {
+    Mail::fake();
+
     $admin = User::factory()->admin()->create();
     $edition = Edition::factory()->create(['status' => 'active']);
 
@@ -39,6 +43,10 @@ test('an admin can create an invitation code for the active edition', function (
     expect(AuditLog::where('action', 'invitation_code.created')
         ->where('subject_id', $code->id)
         ->exists())->toBeTrue();
+
+    Mail::assertQueued(InvitationCodeMail::class, fn (InvitationCodeMail $mail) => $mail->hasTo('candidat@example.com')
+        && $mail->invitationCode->is($code)
+    );
 });
 
 test('creating an invitation code requires a valid email', function () {
@@ -53,6 +61,8 @@ test('creating an invitation code requires a valid email', function () {
 });
 
 test('an invitation code cannot be created for an email that already has an account', function () {
+    Mail::fake();
+
     $admin = User::factory()->admin()->create();
     Edition::factory()->create(['status' => 'active']);
     User::factory()->create(['email' => 'candidat@example.com']);
@@ -62,6 +72,7 @@ test('an invitation code cannot be created for an email that already has an acco
     ]);
 
     $response->assertSessionHasErrors('email');
+    Mail::assertNothingSent();
 });
 
 test('an invitation code cannot be created for an email with an already pending code on the edition', function () {

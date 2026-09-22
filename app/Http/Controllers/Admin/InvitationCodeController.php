@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreInvitationCodeRequest;
+use App\Mail\InvitationCodeMail;
 use App\Models\AuditLog;
 use App\Models\Edition;
 use App\Models\InvitationCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class InvitationCodeController extends Controller
@@ -54,8 +56,10 @@ class InvitationCodeController extends Controller
             'email' => $code->email,
         ]);
 
+        Mail::to($code->email)->send(new InvitationCodeMail($code));
+
         return redirect()->route('admin.invitation-codes.index')
-            ->with('status', "Code d'invitation créé pour {$code->email}.");
+            ->with('status', "Code d'invitation créé et envoyé à {$code->email}.");
     }
 
     /**
