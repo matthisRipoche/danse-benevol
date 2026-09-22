@@ -49,7 +49,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 ## §4 — Back-office Administrateur
 
 - [x] ✅ Dashboard admin : compteurs temps réel (bénévoles, comptes créés, plannings validés/en attente, taux de remplissage) — `Admin\DashboardController`, nouvelle page d'accueil admin
-- [ ] ⬜ Recherche multi-critères (nom, prénom, mission, statut, jour)
+- [x] ✅ Recherche multi-critères (nom, prénom, mission, statut, jour) — `Admin\VolunteerController`
 - [ ] ⬜ Modification d'un planning verrouillé par un admin
 - [x] ✅ Forcer l'attribution de postes sensibles
 - [ ] ⬜ Réinitialisation des identifiants par un admin
