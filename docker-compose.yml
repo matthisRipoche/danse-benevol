@@ -1,0 +1,22 @@
+services:
+    mysql:
+        image: mysql:8.0
+        container_name: danse-benevol-mysql
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: danse_benevol
+            MYSQL_USER: danse_benevol
+            MYSQL_PASSWORD: danse_benevol
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "3307:3306"
+        volumes:
+            - danse-benevol-mysql-data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+volumes:
+    danse-benevol-mysql-data:
