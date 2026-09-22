@@ -43,4 +43,24 @@ class InvitationCodeFactory extends Factory
             'used_at' => now(),
         ]);
     }
+
+    /**
+     * Indicate that the code has expired.
+     */
+    public function expired(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'expires_at' => now()->subDay(),
+        ]);
+    }
+
+    /**
+     * Indicate that the code has been revoked.
+     */
+    public function revoked(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'revoked',
+        ]);
+    }
 }

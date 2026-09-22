@@ -17,15 +17,15 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [x] ✅ Modèles Eloquent + relations + casts
 - [x] ✅ Factories pour toutes les tables
 - [x] ✅ Seeder de données de démo réalistes (Faker) — `DemoDataSeeder`
-- [ ] ⬜ Décision + implémentation du stockage des photos (disque privé vs public, route de service) — reportée à l'inscription
+- [x] ✅ Décision + implémentation du stockage des photos (disque privé `local`, upload à l'inscription — route de service authentifiée à faire plus tard, liée à la génération de badge)
 
 ## §2 — Sécurité, authentification & compte bénévole
 
 - [ ] ⬜ Génération/gestion des codes d'invitation côté admin (le modèle `InvitationCode` existe, pas d'UI/logique applicative)
-- [ ] ⬜ Inscription strictement conditionnée par un code d'invitation valide
-- [ ] ⬜ Formulaire d'inscription (nom, prénom, e-mail, téléphone, mot de passe, photo)
-- [ ] ⬜ Upload de la photo (dépend de la décision de stockage ci-dessus)
-- [ ] ⬜ Contrôle applicatif d'unicité du compte (l'e-mail est déjà `UNIQUE` en base)
+- [x] ✅ Inscription strictement conditionnée par un code d'invitation valide
+- [x] ✅ Formulaire d'inscription (nom, prénom, e-mail, téléphone, mot de passe, photo)
+- [x] ✅ Upload de la photo (dépend de la décision de stockage ci-dessus)
+- [x] ✅ Contrôle applicatif d'unicité du compte (l'e-mail est déjà `UNIQUE` en base)
 - [ ] ⬜ Verrouillage des infos perso après validation, modifiable par un admin seulement (colonne `profile_locked_at` déjà en base, logique applicative à écrire)
 - [ ] ⬜ Réinitialisation / modification du mot de passe
 - [ ] ⬜ Onboarding / dashboard bénévole (règles, dates, quotas, contacts, engagement)
