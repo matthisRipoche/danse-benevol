@@ -7,7 +7,13 @@ use App\Http\Controllers\PlanningController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (! auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    return auth()->user()->role === 'admin'
+        ? redirect()->route('admin.invitation-codes.index')
+        : redirect()->route('planning.index');
 });
 
 Route::get('/inscription', [RegisteredUserController::class, 'create'])->name('register');

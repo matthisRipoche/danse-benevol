@@ -49,3 +49,12 @@ test('login fails with an unknown email', function () {
     $response->assertSessionHasErrors('email');
     $this->assertGuest();
 });
+
+test('logging out redirects to the login page', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->post('/deconnexion');
+
+    $response->assertRedirect(route('login'));
+    $this->assertGuest();
+});
