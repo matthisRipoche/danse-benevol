@@ -88,4 +88,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(AuditLog::class, 'admin_id');
     }
+
+    /**
+     * The route name this user should land on once authenticated.
+     */
+    public function homeRouteName(): string
+    {
+        return $this->role === 'admin' ? 'admin.invitation-codes.index' : 'planning.index';
+    }
 }

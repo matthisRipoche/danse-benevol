@@ -7,22 +7,20 @@ use App\Http\Controllers\PlanningController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (! auth()->check()) {
-        return redirect()->route('login');
-    }
-
-    return auth()->user()->role === 'admin'
-        ? redirect()->route('admin.invitation-codes.index')
-        : redirect()->route('planning.index');
+    return auth()->check()
+        ? redirect()->route(auth()->user()->homeRouteName())
+        : redirect()->route('login');
 });
 
-Route::get('/inscription', [RegisteredUserController::class, 'create'])->name('register');
-Route::post('/inscription', [RegisteredUserController::class, 'store'])
-    ->middleware('throttle:6,1');
+Route::middleware('guest')->group(function () {
+    Route::get('/inscription', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/inscription', [RegisteredUserController::class, 'store'])
+        ->middleware('throttle:6,1');
 
-Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
-Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
-    ->middleware('throttle:6,1');
+    Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:6,1');
+});
 Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');

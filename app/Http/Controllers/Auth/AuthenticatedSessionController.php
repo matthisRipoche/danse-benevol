@@ -28,11 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->role === 'admin') {
-            return redirect()->route('admin.invitation-codes.index');
-        }
-
-        return redirect()->route('planning.index');
+        return redirect()->route($request->user()->homeRouteName());
     }
 
     /**
