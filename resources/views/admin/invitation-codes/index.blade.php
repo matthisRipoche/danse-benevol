@@ -11,13 +11,13 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="mx-auto max-w-3xl p-6">
+        <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
             @include('admin.partials.nav')
 
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-lg font-semibold">Codes d'invitation</h1>
                 <a href="{{ route('admin.invitation-codes.create') }}"
-                    class="rounded-md bg-[#1b1b18] px-4 py-2 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
+                    class="rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600">
                     Nouveau code
                 </a>
             </div>
@@ -64,7 +64,7 @@
                                 @if ($code->status === 'pending')
                                     <form method="POST" action="{{ route('admin.invitation-codes.revoke', $code) }}">
                                         @csrf
-                                        <button type="submit" class="text-sm text-red-600 hover:underline dark:text-red-400">
+                                        <button type="submit" class="rounded-md bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700">
                                             Révoquer
                                         </button>
                                     </form>

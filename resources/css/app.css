@@ -1,9 +1,30 @@
 @import 'tailwindcss';
 
+/* Thème clair uniquement : le variant dark: ne s'active plus qu'avec une classe .dark
+   explicite (jamais posée), plutôt que de suivre prefers-color-scheme du système. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Open Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+
+    /* Palette reprise de salondeladanse.fr */
+    --color-brand-50: #fbf0ee;
+    --color-brand-100: #f3d7d1;
+    --color-brand-400: #a8493a;
+    --color-brand-500: #7a291e;
+    --color-brand-600: #591e16;
+    --color-brand-700: #3f1610;
+
+    --color-accent-500: #993300;
+    --color-accent-600: #7a2900;
+}
+
+/* Taille de police de base relevée : tous les utilitaires text-* (en rem) suivent. */
+html {
+    font-size: 112.5%;
 }

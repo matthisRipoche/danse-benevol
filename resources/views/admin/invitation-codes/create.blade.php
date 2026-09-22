@@ -37,12 +37,12 @@
                     </div>
 
                     <button type="submit"
-                        class="mt-2 rounded-md bg-[#1b1b18] px-5 py-2 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
+                        class="mt-2 rounded-md bg-brand-500 px-5 py-2 text-sm font-medium text-white hover:bg-brand-600">
                         Créer le code
                     </button>
                 </form>
 
-                <a href="{{ route('admin.invitation-codes.index') }}" class="mt-4 inline-block text-sm underline">
+                <a href="{{ route('admin.invitation-codes.index') }}" class="mt-4 inline-block rounded-md bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200">
                     Retour à la liste
                 </a>
             </div>

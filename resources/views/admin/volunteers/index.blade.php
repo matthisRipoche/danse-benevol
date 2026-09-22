@@ -11,7 +11,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="mx-auto max-w-4xl p-6">
+        <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
             @include('admin.partials.nav')
 
             <h1 class="mb-6 text-lg font-semibold">Bénévoles — {{ $edition->name }}</h1>
@@ -45,10 +45,10 @@
 
                 <div class="col-span-2 flex gap-2 sm:col-span-3 lg:col-span-5">
                     <button type="submit"
-                        class="rounded-md bg-[#1b1b18] px-4 py-1.5 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
+                        class="rounded-md bg-brand-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-600">
                         Rechercher
                     </button>
-                    <a href="{{ route('admin.volunteers.index') }}" class="px-4 py-1.5 text-sm underline">
+                    <a href="{{ route('admin.volunteers.index') }}" class="rounded-md bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200">
                         Réinitialiser
                     </a>
                 </div>
