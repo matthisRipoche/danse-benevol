@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Admin\RestrictedMissionController;
+use App\Http\Controllers\Admin\VolunteerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PlanningController;
@@ -44,6 +45,8 @@ Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/benevoles', [VolunteerController::class, 'index'])->name('volunteers.index');
 
     Route::get('/codes-invitation', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
     Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');
