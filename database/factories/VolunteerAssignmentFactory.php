@@ -19,15 +19,23 @@ class VolunteerAssignmentFactory extends Factory
      */
     public function definition(): array
     {
-        $missionSlot = MissionSlot::factory()->create();
-
         return [
             'user_id' => User::factory(),
-            'mission_slot_id' => $missionSlot->id,
-            'time_slot_id' => $missionSlot->time_slot_id,
+            'mission_slot_id' => MissionSlot::factory(),
             'status' => 'draft',
             'assigned_by_id' => null,
         ];
+    }
+
+    /**
+     * Keep `time_slot_id` in sync with the (possibly overridden) mission slot, since it is
+     * denormalized purely to support the DB-level uniqueness constraint.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (VolunteerAssignment $assignment) {
+            $assignment->time_slot_id ??= MissionSlot::find($assignment->mission_slot_id)?->time_slot_id;
+        });
     }
 
     /**

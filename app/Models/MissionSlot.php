@@ -16,6 +16,18 @@ class MissionSlot extends Model
     use HasFactory;
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'capacity' => 'integer',
+        ];
+    }
+
+    /**
      * @return BelongsTo<Mission>
      */
     public function mission(): BelongsTo

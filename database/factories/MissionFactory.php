@@ -38,7 +38,7 @@ class MissionFactory extends Factory
     {
         return [
             'edition_id' => Edition::factory(),
-            'name' => fake()->unique()->randomElement(self::PUBLIC_MISSIONS),
+            'name' => fake()->randomElement(self::PUBLIC_MISSIONS),
             'description' => fake()->sentence(),
             'is_public' => true,
         ];
@@ -50,7 +50,7 @@ class MissionFactory extends Factory
     public function restricted(): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => fake()->unique()->randomElement(['Billetterie', 'Caisse']),
+            'name' => fake()->randomElement(['Billetterie', 'Caisse']),
             'is_public' => false,
         ]);
     }

@@ -40,6 +40,9 @@ class Edition extends Model
             'registration_opens_at' => 'datetime',
             'registration_closes_at' => 'datetime',
             'is_registration_locked' => 'boolean',
+            'min_slots_per_volunteer' => 'integer',
+            'max_slots_per_volunteer' => 'integer',
+            'max_consecutive_slots' => 'integer',
         ];
     }
 
