@@ -66,6 +66,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('register.confirmation');
+        return redirect()->route('planning.index')
+            ->with('status', 'Bienvenue ! Ton compte a été créé, tu peux composer ton planning ci-dessous.');
     }
 }

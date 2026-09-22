@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('a user can log in with correct credentials', function () {
+test('a volunteer is redirected to their planning after login', function () {
     $user = User::factory()->create();
 
     $response = $this->post('/connexion', [
@@ -13,7 +13,7 @@ test('a user can log in with correct credentials', function () {
         'password' => 'password',
     ]);
 
-    $response->assertRedirect('/');
+    $response->assertRedirect(route('planning.index'));
     $this->assertAuthenticatedAs($user);
 });
 
@@ -48,4 +48,29 @@ test('login fails with an unknown email', function () {
 
     $response->assertSessionHasErrors('email');
     $this->assertGuest();
+});
+
+test('logging out redirects to the login page', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->post('/deconnexion');
+
+    $response->assertRedirect(route('login'));
+    $this->assertGuest();
+});
+
+test('an already authenticated volunteer visiting the login page is redirected to their planning', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/connexion');
+
+    $response->assertRedirect(route('planning.index'));
+});
+
+test('an already authenticated admin visiting the login page is redirected to the invitation codes list', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->get('/connexion');
+
+    $response->assertRedirect(route('admin.invitation-codes.index'));
 });

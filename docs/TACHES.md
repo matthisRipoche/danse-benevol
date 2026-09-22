@@ -33,18 +33,18 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 
 ## §3 — Module Planning & règles métier
 
-- [ ] ⬜ Interface de sélection du planning, mobile-first, visuelle et interactive
-- [ ] ⬜ Affichage des jauges avec code couleur dynamique (vert/orange/rouge-gris)
-- [ ] ⬜ Contrôle des règles métier à la réservation :
+- [x] ✅ Interface de sélection du planning, mobile-first, visuelle et interactive (formulaires serveur, sans framework JS)
+- [x] ✅ Affichage des jauges avec code couleur dynamique (vert/orange/rouge-gris) — `MissionSlot::gaugeStatus()`
+- [x] ✅ Contrôle des règles métier à la réservation :
   - [x] ✅ Non-chevauchement (2 missions sur le même créneau) — contrainte `UNIQUE(user_id, time_slot_id)` en base
-  - [ ] ⬜ Min 1 / max 3 créneaux par bénévole
-  - [ ] ⬜ Pas plus de `max_consecutive_slots` créneaux consécutifs
-  - [ ] ⬜ Jauge de capacité non dépassée (`MissionSlot::remainingCapacity()` existe, pas encore branché à une validation de réservation)
-- [ ] ⬜ Confidentialité : n'afficher que le nombre de places restantes, jamais l'identité des autres inscrits
-- [ ] ⬜ Postes sous restriction (Billetterie, Caisse) hors planning public, attribution manuelle admin uniquement (modélisé via `missions.is_public` / `volunteer_assignments.assigned_by_id`, logique/UI à faire)
-- [ ] ⬜ Mode brouillon modifiable + validation définitive avec pop-up de confirmation + verrouillage
-- [ ] ⬜ Profil bénévole : récapitulatif missions/horaires + consignes
-- [ ] ⬜ Export/impression du planning individuel en PDF
+  - [x] ✅ Min 1 / max 3 créneaux par bénévole
+  - [x] ✅ Pas plus de `max_consecutive_slots` créneaux consécutifs
+  - [x] ✅ Jauge de capacité non dépassée (`MissionSlot::remainingCapacity()` branché à `PlanningController::reserve()`)
+- [x] ✅ Confidentialité : n'afficher que le nombre de places restantes, jamais l'identité des autres inscrits
+- [ ] ⬜ Postes sous restriction (Billetterie, Caisse) hors planning public, attribution manuelle admin uniquement (modélisé via `missions.is_public` / `volunteer_assignments.assigned_by_id`, logique/UI à faire — fonctionnalité admin, traitée avec §4)
+- [x] ✅ Mode brouillon modifiable + validation définitive avec pop-up de confirmation + verrouillage
+- [x] ✅ Profil bénévole : récapitulatif missions/horaires + consignes (règles affichées sur la page planning)
+- [ ] ⬜ Export/impression du planning individuel en PDF (nécessite une dépendance PDF, PR dédié)
 
 ## §4 — Back-office Administrateur
 

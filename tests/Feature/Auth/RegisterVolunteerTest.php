@@ -23,6 +23,14 @@ function validRegistrationPayload(InvitationCode $code, array $overrides = []): 
     ], $overrides);
 }
 
+test('an already authenticated volunteer visiting the registration page is redirected to their planning', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/inscription');
+
+    $response->assertRedirect(route('planning.index'));
+});
+
 test('a volunteer can register with a valid pending invitation code', function () {
     Storage::fake('local');
 
@@ -31,7 +39,7 @@ test('a volunteer can register with a valid pending invitation code', function (
 
     $response = $this->post('/inscription', validRegistrationPayload($code));
 
-    $response->assertRedirect(route('register.confirmation'));
+    $response->assertRedirect(route('planning.index'));
     $this->assertAuthenticated();
 
     $user = User::where('email', 'camille.dupont@example.com')->firstOrFail();
@@ -118,6 +126,7 @@ test('an invitation code cannot be reused for a second registration', function (
     $code = InvitationCode::factory()->create();
 
     $this->post('/inscription', validRegistrationPayload($code));
+    $this->post('/deconnexion');
 
     $response = $this->post('/inscription', validRegistrationPayload($code, [
         'email' => 'second-attempt@example.com',

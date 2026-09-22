@@ -20,6 +20,7 @@ test('an admin can view the list of invitation codes for the active edition', fu
     $response->assertOk();
     $response->assertSee('candidat@example.com');
     $response->assertSee($code->code);
+    $response->assertSee('Déconnexion');
 });
 
 test('an admin can create an invitation code for the active edition', function () {
