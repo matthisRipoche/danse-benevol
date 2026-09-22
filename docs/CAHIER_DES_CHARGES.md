@@ -98,3 +98,7 @@ Billetterie, Caisse : hors-planning public, attribution manuelle par l'admin uni
   - En production, un environnement MySQL différent sera utilisé (ex. Laravel Cloud) — ces identifiants ne concernent que le développement local.
 - **phpMyAdmin (local uniquement)** : service `phpmyadmin` dans `docker-compose.yml`, accessible sur http://localhost:8081 (identifiants : `danse_benevol` / `danse_benevol`). N'est jamais déployé en production.
 - *(Cette section sera enrichie au fur et à mesure des décisions prises pendant le projet.)*
+
+## Points ouverts / à trancher
+
+- **Stockage des photos bénévoles** (`users.photo_path`) : disque à choisir (`local` privé + route authentifiée vs `public`) et implémentation de l'upload — à faire avec le reste de l'authentification/inscription. Recommandation : disque privé (`storage/app/private`) + route authentifiée, car ce sont des photos de personnes potentiellement mineures, pas d'URL publique devinable.
