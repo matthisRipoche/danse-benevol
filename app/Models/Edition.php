@@ -80,4 +80,12 @@ class Edition extends Model
             ->withPivot(['is_validated', 'validated_at', 'badge_uid'])
             ->withTimestamps();
     }
+
+    /**
+     * The edition currently open for admin/volunteer operations.
+     */
+    public static function active(): self
+    {
+        return static::where('status', 'active')->firstOrFail();
+    }
 }

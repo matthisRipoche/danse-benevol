@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'edition_id',
@@ -58,5 +59,17 @@ class InvitationCode extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by_id');
+    }
+
+    /**
+     * Generate a random code that isn't already in use.
+     */
+    public static function generateUniqueCode(): string
+    {
+        do {
+            $code = Str::upper(Str::random(8));
+        } while (static::where('code', $code)->exists());
+
+        return $code;
     }
 }
