@@ -1,0 +1,73 @@
+# Suivi des tâches — Plateforme de gestion des bénévoles
+
+Liste de tâches dérivée du [cahier des charges](CAHIER_DES_CHARGES.md), organisée dans le même ordre. À mettre à jour au fil de l'avancement (cocher/décocher, ajouter des sous-tâches si besoin).
+
+Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manque) — ⬜ À faire
+
+## Infrastructure & outillage (hors périmètre du cahier des charges, mais nécessaire au dev)
+
+- [x] ✅ Environnement MySQL local via Docker (`docker-compose.yml`)
+- [x] ✅ phpMyAdmin en local (Docker, dev uniquement)
+- [x] ✅ Bandeau d'URLs locales au lancement de `php artisan serve` / `composer run dev`
+
+## Base de données
+
+- [x] ✅ Dictionnaire de données (`docs/DICTIONNAIRE_DONNEES.md`)
+- [x] ✅ Migrations du schéma complet (11 tables)
+- [x] ✅ Modèles Eloquent + relations + casts
+- [x] ✅ Factories pour toutes les tables
+- [x] ✅ Seeder de données de démo réalistes (Faker) — `DemoDataSeeder`
+- [ ] ⬜ Décision + implémentation du stockage des photos (disque privé vs public, route de service) — reportée à l'inscription
+
+## §2 — Sécurité, authentification & compte bénévole
+
+- [ ] ⬜ Génération/gestion des codes d'invitation côté admin (le modèle `InvitationCode` existe, pas d'UI/logique applicative)
+- [ ] ⬜ Inscription strictement conditionnée par un code d'invitation valide
+- [ ] ⬜ Formulaire d'inscription (nom, prénom, e-mail, téléphone, mot de passe, photo)
+- [ ] ⬜ Upload de la photo (dépend de la décision de stockage ci-dessus)
+- [ ] ⬜ Contrôle applicatif d'unicité du compte (l'e-mail est déjà `UNIQUE` en base)
+- [ ] ⬜ Verrouillage des infos perso après validation, modifiable par un admin seulement (colonne `profile_locked_at` déjà en base, logique applicative à écrire)
+- [ ] ⬜ Réinitialisation / modification du mot de passe
+- [ ] ⬜ Onboarding / dashboard bénévole (règles, dates, quotas, contacts, engagement)
+- [ ] ⬜ Fenêtre d'inscription : planning en lecture seule hors période + verrouillage manuel admin (colonnes `registration_opens_at`/`registration_closes_at`/`is_registration_locked` déjà en base)
+
+## §3 — Module Planning & règles métier
+
+- [ ] ⬜ Interface de sélection du planning, mobile-first, visuelle et interactive
+- [ ] ⬜ Affichage des jauges avec code couleur dynamique (vert/orange/rouge-gris)
+- [ ] ⬜ Contrôle des règles métier à la réservation :
+  - [x] ✅ Non-chevauchement (2 missions sur le même créneau) — contrainte `UNIQUE(user_id, time_slot_id)` en base
+  - [ ] ⬜ Min 1 / max 3 créneaux par bénévole
+  - [ ] ⬜ Pas plus de `max_consecutive_slots` créneaux consécutifs
+  - [ ] ⬜ Jauge de capacité non dépassée (`MissionSlot::remainingCapacity()` existe, pas encore branché à une validation de réservation)
+- [ ] ⬜ Confidentialité : n'afficher que le nombre de places restantes, jamais l'identité des autres inscrits
+- [ ] ⬜ Postes sous restriction (Billetterie, Caisse) hors planning public, attribution manuelle admin uniquement (modélisé via `missions.is_public` / `volunteer_assignments.assigned_by_id`, logique/UI à faire)
+- [ ] ⬜ Mode brouillon modifiable + validation définitive avec pop-up de confirmation + verrouillage
+- [ ] ⬜ Profil bénévole : récapitulatif missions/horaires + consignes
+- [ ] ⬜ Export/impression du planning individuel en PDF
+
+## §4 — Back-office Administrateur
+
+- [ ] ⬜ Dashboard admin : compteurs temps réel (bénévoles, comptes créés, plannings validés/en attente, taux de remplissage)
+- [ ] ⬜ Recherche multi-critères (nom, prénom, mission, statut, jour)
+- [ ] ⬜ Modification d'un planning verrouillé par un admin
+- [ ] ⬜ Forcer l'attribution de postes sensibles
+- [ ] ⬜ Réinitialisation des identifiants par un admin
+- [ ] ⬜ Validation des profils mineurs (colonne `minor_validated_at` déjà en base)
+- [ ] ⬜ Génération automatique des badges (Photo, Nom, Prénom, "BÉNÉVOLE", ID unique, QR code) — `badge_uid` déjà en base
+- [ ] ⬜ Exports Excel / CSV / PDF (plannings, listes par mission, fiches contact)
+- [ ] ⬜ Log d'audit horodaté des actions admin — table `audit_logs` en base, pas encore branchée à des actions réelles
+- [ ] ⬜ Gestion multi-éditions : création, archivage, consultation des éditions passées (le modèle `Edition` est déjà pensé multi-éditions, UI à faire)
+
+## Fonctionnalités avancées (post-MVP)
+
+- [ ] ⬜ QR code dynamique sur le badge
+- [ ] ⬜ Notifications e-mail automatiques (confirmation, rappels)
+- [ ] ⬜ Historique détaillé des modifications admin (UI de consultation des `audit_logs`)
+- [ ] ⬜ Archivage multi-éditions (UI)
+
+## Livrables attendus en fin de semaine
+
+- [ ] ⬜ Démo prototype fonctionnel (parcours bénévole & admin)
+- [x] ✅ Base de données structurée
+- [ ] ⬜ Présentation des choix d'architecture technique

@@ -3,6 +3,8 @@
 **Projet :** Salon de la Danse (Angers) — association JayDance Fam
 **Contexte :** Starter-pack Master 1 FullStack / Cybersécurité & Architecture Réseau
 
+**Voir aussi :** [dictionnaire de données](DICTIONNAIRE_DONNEES.md) · [suivi des tâches](TACHES.md)
+
 ## Contexte événement
 
 - Salon de la Danse : 2,5 jours au Centre de Congrès d'Angers.
