@@ -38,4 +38,20 @@ class AuditLog extends Model
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
+
+    /**
+     * Record an admin action against a subject model.
+     *
+     * @param  array<string, mixed>  $changes
+     */
+    public static function record(User $admin, string $action, Model $subject, array $changes = []): self
+    {
+        return static::create([
+            'admin_id' => $admin->id,
+            'action' => $action,
+            'subject_type' => $subject::class,
+            'subject_id' => $subject->id,
+            'changes' => $changes,
+        ]);
+    }
 }

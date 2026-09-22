@@ -21,7 +21,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 
 ## §2 — Sécurité, authentification & compte bénévole
 
-- [ ] ⬜ Génération/gestion des codes d'invitation côté admin (le modèle `InvitationCode` existe, pas d'UI/logique applicative)
+- [x] ✅ Génération/gestion des codes d'invitation côté admin (création unitaire par e-mail + liste + révocation ; génération en masse non couverte)
 - [x] ✅ Inscription strictement conditionnée par un code d'invitation valide
 - [x] ✅ Formulaire d'inscription (nom, prénom, e-mail, téléphone, mot de passe, photo)
 - [x] ✅ Upload de la photo (dépend de la décision de stockage ci-dessus)

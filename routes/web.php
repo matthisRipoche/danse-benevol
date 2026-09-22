@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\InvitationCodeController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,3 +16,17 @@ Route::post('/inscription', [RegisteredUserController::class, 'store'])
 Route::get('/inscription/bienvenue', function () {
     return view('auth.registered');
 })->middleware('auth')->name('register.confirmation');
+
+Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
+Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('throttle:6,1');
+Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/codes-invitation', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
+    Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');
+    Route::post('/codes-invitation', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
+    Route::post('/codes-invitation/{invitationCode}/revoquer', [InvitationCodeController::class, 'revoke'])->name('invitation-codes.revoke');
+});
