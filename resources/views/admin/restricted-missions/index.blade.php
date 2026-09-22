@@ -62,7 +62,7 @@
                                             <form method="POST" action="{{ route('admin.restricted-missions.unassign', $assignment) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-sm text-red-600 hover:underline dark:text-red-400">
+                                                <button type="submit" class="rounded-md bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700">
                                                     Retirer
                                                 </button>
                                             </form>

@@ -42,7 +42,7 @@
                     </button>
                 </form>
 
-                <a href="{{ route('admin.invitation-codes.index') }}" class="mt-4 inline-block text-sm underline">
+                <a href="{{ route('admin.invitation-codes.index') }}" class="mt-4 inline-block rounded-md bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200">
                     Retour à la liste
                 </a>
             </div>

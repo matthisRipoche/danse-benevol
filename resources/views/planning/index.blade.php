@@ -74,7 +74,7 @@
                                                 <form method="POST" action="{{ route('planning.cancel', $missionSlot) }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-sm text-red-600 hover:underline dark:text-red-400">
+                                                    <button type="submit" class="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700">
                                                         Annuler
                                                     </button>
                                                 </form>
@@ -85,7 +85,7 @@
                                             @else
                                                 <form method="POST" action="{{ route('planning.reserve', $missionSlot) }}">
                                                     @csrf
-                                                    <button type="submit" class="text-sm font-medium underline">
+                                                    <button type="submit" class="rounded-md bg-brand-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-600">
                                                         Réserver
                                                     </button>
                                                 </form>

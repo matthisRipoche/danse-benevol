@@ -48,7 +48,7 @@
                         class="rounded-md bg-brand-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-600">
                         Rechercher
                     </button>
-                    <a href="{{ route('admin.volunteers.index') }}" class="px-4 py-1.5 text-sm underline">
+                    <a href="{{ route('admin.volunteers.index') }}" class="rounded-md bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200">
                         Réinitialiser
                     </a>
                 </div>

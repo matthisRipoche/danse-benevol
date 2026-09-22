@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+/* Thème clair uniquement : le variant dark: ne s'active plus qu'avec une classe .dark
+   explicite (jamais posée), plutôt que de suivre prefers-color-scheme du système. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
@@ -18,4 +22,9 @@
 
     --color-accent-500: #993300;
     --color-accent-600: #7a2900;
+}
+
+/* Taille de police de base relevée : tous les utilitaires text-* (en rem) suivent. */
+html {
+    font-size: 112.5%;
 }
