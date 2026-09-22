@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -73,4 +74,41 @@ test('an already authenticated admin visiting the login page is redirected to th
     $response = $this->actingAs($admin)->get('/connexion');
 
     $response->assertRedirect(route('admin.invitation-codes.index'));
+});
+
+test('the dev admin login button is hidden outside the local environment', function () {
+    $response = $this->get('/connexion');
+
+    $response->assertDontSee('Connexion rapide admin');
+});
+
+test('the dev admin login route is unavailable outside the local environment', function () {
+    $response = $this->post('/connexion/dev-admin');
+
+    $response->assertNotFound();
+    $this->assertGuest();
+});
+
+test('the dev admin login button and route work in the local environment', function () {
+    app()->instance('env', 'local');
+
+    $admin = User::factory()->admin()->create();
+
+    $this->get('/connexion')->assertSee('Connexion rapide admin');
+
+    $response = $this->withoutMiddleware(PreventRequestForgery::class)
+        ->post('/connexion/dev-admin');
+
+    $response->assertRedirect(route('admin.invitation-codes.index'));
+    $this->assertAuthenticatedAs($admin);
+});
+
+test('the dev admin login route fails gracefully when no admin exists', function () {
+    app()->instance('env', 'local');
+
+    $response = $this->withoutMiddleware(PreventRequestForgery::class)
+        ->post('/connexion/dev-admin');
+
+    $response->assertNotFound();
+    $this->assertGuest();
 });
