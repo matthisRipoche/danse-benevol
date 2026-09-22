@@ -13,7 +13,10 @@
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
         <div class="flex min-h-screen flex-col items-center justify-center p-6">
             <div class="w-full max-w-md">
-                <h1 class="mb-6 text-lg font-semibold">Nouveau code d'invitation</h1>
+                <div class="mb-6 flex items-center justify-between">
+                    <h1 class="text-lg font-semibold">Nouveau code d'invitation</h1>
+                    @include('partials.logout-button')
+                </div>
 
                 @if ($errors->any())
                     <div class="mb-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">

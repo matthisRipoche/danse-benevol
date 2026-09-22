@@ -12,7 +12,10 @@
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
         <div class="mx-auto max-w-2xl p-4 sm:p-6">
-            <h1 class="mb-4 text-lg font-semibold">Mon planning — {{ $edition->name }}</h1>
+            <div class="mb-4 flex items-center justify-between">
+                <h1 class="text-lg font-semibold">Mon planning — {{ $edition->name }}</h1>
+                @include('partials.logout-button')
+            </div>
 
             @if (session('status'))
                 <div class="mb-4 rounded-md border border-green-300 bg-green-50 p-4 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">

@@ -37,6 +37,7 @@ test('a registered volunteer sees only public missions with their gauge', functi
     $response->assertOk();
     $response->assertSee('Accueil exposants');
     $response->assertDontSee('Billetterie');
+    $response->assertSee('Déconnexion');
 });
 
 test('a volunteer not registered for the active edition is forbidden', function () {
