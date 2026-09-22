@@ -96,4 +96,5 @@ Billetterie, Caisse : hors-planning public, attribution manuelle par l'admin uni
   - Base : `danse_benevol`, user `danse_benevol` / password `danse_benevol` (dev uniquement).
   - Démarrage : `docker compose up -d mysql`.
   - En production, un environnement MySQL différent sera utilisé (ex. Laravel Cloud) — ces identifiants ne concernent que le développement local.
+- **phpMyAdmin (local uniquement)** : service `phpmyadmin` dans `docker-compose.yml`, accessible sur http://localhost:8081 (identifiants : `danse_benevol` / `danse_benevol`). N'est jamais déployé en production.
 - *(Cette section sera enrichie au fur et à mesure des décisions prises pendant le projet.)*
