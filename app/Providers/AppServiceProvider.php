@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Console\Events\CommandStarting;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->logLocalUrlsOnServe();
+    }
+
+    /**
+     * Display the local application and tooling URLs when the dev server starts.
+     */
+    protected function logLocalUrlsOnServe(): void
+    {
+        if (! $this->app->environment('local')) {
+            return;
+        }
+
+        Event::listen(function (CommandStarting $event): void {
+            if ($event->command !== 'serve') {
+                return;
+            }
+
+            $event->output->writeln('');
+            $event->output->writeln('  <fg=yellow;options=bold>URLs locales</>');
+            $event->output->writeln('  Application   '.config('app.url'));
+            $event->output->writeln('  phpMyAdmin    http://localhost:8081');
+            $event->output->writeln('');
+        });
     }
 }
