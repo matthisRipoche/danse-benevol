@@ -187,8 +187,11 @@ Historique d'audit des actions administrateur.
 | missions.is_public | (boolean) | false = poste sensible (Billetterie, Caisse) |
 | volunteer_assignments.status | draft, validated | |
 
+## Décisions actées
+
+- Pas de rôle intermédiaire entre `admin` et `volunteer` : `users.role` reste un enum à 2 valeurs.
+- Les exports (Excel/CSV/PDF) sont générés **à la volée**, jamais persistés en base ni sur disque : aucune table dédiée aux exports.
+
 ## Points ouverts / à trancher
 
-- Faut-il un rôle intermédiaire (ex. "référent mission") entre `admin` et `volunteer` ? — non demandé par le cahier des charges, à confirmer si besoin.
-- Format de stockage des exports (générés à la volée vs. fichiers persistés) — non modélisé ici, considéré comme hors scope base de données.
 - *(à compléter au fil des décisions)*
