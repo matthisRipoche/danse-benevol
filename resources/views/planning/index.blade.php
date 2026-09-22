@@ -11,9 +11,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="mx-auto max-w-2xl p-4 sm:p-6">
+        <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
             <div class="mb-4 flex items-center justify-between">
-                <h1 class="text-lg font-semibold">Mon planning — {{ $edition->name }}</h1>
+                <h1 class="font-heading text-xl font-bold text-brand-500 sm:text-2xl dark:text-brand-400">Mon planning — {{ $edition->name }}</h1>
                 @include('partials.logout-button')
             </div>
 
@@ -41,7 +41,7 @@
 
             @foreach ($days as $day)
                 <section class="mb-8">
-                    <h2 class="mb-2 font-semibold">{{ $day->label }} — {{ $day->date->format('d/m/Y') }}</h2>
+                    <h2 class="mb-2 font-heading font-semibold text-brand-500 dark:text-brand-400">{{ $day->label }} — {{ $day->date->format('d/m/Y') }}</h2>
 
                     @foreach ($day->timeSlots as $timeSlot)
                         @php
@@ -50,7 +50,7 @@
                         <div class="mb-3 rounded-md border border-gray-200 p-3 dark:border-gray-700">
                             <p class="mb-2 text-sm font-medium">{{ substr($timeSlot->starts_at, 0, 5) }} – {{ substr($timeSlot->ends_at, 0, 5) }}</p>
 
-                            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 @foreach ($timeSlot->missionSlots as $missionSlot)
                                     @php
                                         $isMine = in_array($missionSlot->id, $reservedMissionSlotIds);
@@ -100,7 +100,7 @@
             @endforeach
 
             <section class="mt-8 rounded-md border border-gray-300 p-4 dark:border-gray-600">
-                <h2 class="mb-2 font-semibold">Récapitulatif</h2>
+                <h2 class="mb-2 font-heading font-semibold text-brand-500 dark:text-brand-400">Récapitulatif</h2>
 
                 <ul class="mb-4 list-inside list-disc text-sm">
                     @forelse ($assignments as $assignment)
