@@ -41,7 +41,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
   - [x] ✅ Pas plus de `max_consecutive_slots` créneaux consécutifs
   - [x] ✅ Jauge de capacité non dépassée (`MissionSlot::remainingCapacity()` branché à `PlanningController::reserve()`)
 - [x] ✅ Confidentialité : n'afficher que le nombre de places restantes, jamais l'identité des autres inscrits
-- [ ] ⬜ Postes sous restriction (Billetterie, Caisse) hors planning public, attribution manuelle admin uniquement (modélisé via `missions.is_public` / `volunteer_assignments.assigned_by_id`, logique/UI à faire — fonctionnalité admin, traitée avec §4)
+- [x] ✅ Postes sous restriction (Billetterie, Caisse) hors planning public, attribution manuelle admin uniquement — `Admin\RestrictedMissionController`
 - [x] ✅ Mode brouillon modifiable + validation définitive avec pop-up de confirmation + verrouillage
 - [x] ✅ Profil bénévole : récapitulatif missions/horaires + consignes (règles affichées sur la page planning)
 - [ ] ⬜ Export/impression du planning individuel en PDF (nécessite une dépendance PDF, PR dédié)
@@ -51,12 +51,12 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [ ] ⬜ Dashboard admin : compteurs temps réel (bénévoles, comptes créés, plannings validés/en attente, taux de remplissage)
 - [ ] ⬜ Recherche multi-critères (nom, prénom, mission, statut, jour)
 - [ ] ⬜ Modification d'un planning verrouillé par un admin
-- [ ] ⬜ Forcer l'attribution de postes sensibles
+- [x] ✅ Forcer l'attribution de postes sensibles
 - [ ] ⬜ Réinitialisation des identifiants par un admin
 - [ ] ⬜ Validation des profils mineurs (colonne `minor_validated_at` déjà en base)
 - [ ] ⬜ Génération automatique des badges (Photo, Nom, Prénom, "BÉNÉVOLE", ID unique, QR code) — `badge_uid` déjà en base
 - [ ] ⬜ Exports Excel / CSV / PDF (plannings, listes par mission, fiches contact)
-- [ ] ⬜ Log d'audit horodaté des actions admin — table `audit_logs` en base, pas encore branchée à des actions réelles
+- [ ] 🚧 Log d'audit horodaté des actions admin — branché sur la création/révocation de codes d'invitation et l'attribution/retrait de postes restreints ; pas encore d'UI de consultation (cf. fonctionnalités avancées)
 - [ ] ⬜ Gestion multi-éditions : création, archivage, consultation des éditions passées (le modèle `Edition` est déjà pensé multi-éditions, UI à faire)
 
 ## Fonctionnalités avancées (post-MVP)

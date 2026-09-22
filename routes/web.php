@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InvitationCodeController;
+use App\Http\Controllers\Admin\RestrictedMissionController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PlanningController;
@@ -30,6 +31,10 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');
     Route::post('/codes-invitation', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
     Route::post('/codes-invitation/{invitationCode}/revoquer', [InvitationCodeController::class, 'revoke'])->name('invitation-codes.revoke');
+
+    Route::get('/postes-restreints', [RestrictedMissionController::class, 'index'])->name('restricted-missions.index');
+    Route::post('/postes-restreints/{missionSlot}/assigner', [RestrictedMissionController::class, 'assign'])->name('restricted-missions.assign');
+    Route::delete('/postes-restreints/{volunteerAssignment}', [RestrictedMissionController::class, 'unassign'])->name('restricted-missions.unassign');
 });
 
 Route::middleware('auth')->group(function () {
