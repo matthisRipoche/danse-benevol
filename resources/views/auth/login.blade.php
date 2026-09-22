@@ -45,6 +45,16 @@
                         Se connecter
                     </button>
                 </form>
+
+                @if (app()->environment('local'))
+                    <form method="POST" action="{{ route('dev-login.admin') }}" class="mt-6 border-t border-dashed border-gray-300 pt-4 dark:border-gray-700">
+                        @csrf
+                        <button type="submit"
+                            class="w-full rounded-md border border-dashed border-gray-400 px-5 py-2 text-sm text-gray-500 hover:border-gray-600 hover:text-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-gray-200">
+                            Connexion rapide admin (dev uniquement)
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
     </body>

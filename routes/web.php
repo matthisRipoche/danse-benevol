@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PlanningController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +22,19 @@ Route::middleware('guest')->group(function () {
     Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
         ->middleware('throttle:6,1');
+
+    // Raccourci de connexion admin réservé au développement local — jamais actif en dehors de `local`.
+    Route::post('/connexion/dev-admin', function () {
+        abort_unless(app()->environment('local'), 404);
+
+        $admin = User::where('role', 'admin')->first();
+
+        abort_unless($admin, 404, 'Aucun compte admin en base — lance le seeder (php artisan db:seed).');
+
+        Auth::login($admin);
+
+        return redirect()->route($admin->homeRouteName());
+    })->name('dev-login.admin');
 });
 Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
