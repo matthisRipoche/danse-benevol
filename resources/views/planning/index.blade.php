@@ -123,7 +123,7 @@
                         onsubmit="return confirm('Confirmer la validation définitive de ton planning ? Il sera ensuite verrouillé et modifiable uniquement par un administrateur.');">
                         @csrf
                         <button type="submit"
-                            class="rounded-md bg-[#1b1b18] px-5 py-2 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
+                            class="rounded-md bg-brand-500 px-5 py-2 text-sm font-medium text-white hover:bg-brand-600">
                             Valider définitivement
                         </button>
                     </form>

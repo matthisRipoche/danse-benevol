@@ -11,7 +11,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="mx-auto max-w-2xl p-4 sm:p-6">
+        <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
             @include('admin.partials.nav')
 
             <h1 class="mb-6 text-lg font-semibold">Postes restreints — {{ $edition->name }}</h1>
@@ -77,7 +77,7 @@
                                         @csrf
                                         <input type="email" name="email" placeholder="E-mail du bénévole" required
                                             class="flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
-                                        <button type="submit" class="rounded-md bg-[#1b1b18] px-3 py-1.5 text-sm font-medium text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
+                                        <button type="submit" class="rounded-md bg-brand-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-600">
                                             Assigner
                                         </button>
                                     </form>
