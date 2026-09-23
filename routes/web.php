@@ -55,6 +55,8 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('/codes-invitation', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
     Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');
+    Route::get('/codes-invitation/importer', [InvitationCodeController::class, 'importForm'])->name('invitation-codes.import');
+    Route::post('/codes-invitation/importer', [InvitationCodeController::class, 'import'])->name('invitation-codes.import.store');
     Route::post('/codes-invitation', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
     Route::post('/codes-invitation/{invitationCode}/revoquer', [InvitationCodeController::class, 'revoke'])->name('invitation-codes.revoke');
 
