@@ -48,6 +48,8 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/benevoles', [VolunteerController::class, 'index'])->name('volunteers.index');
+    Route::get('/benevoles/{user}', [VolunteerController::class, 'show'])->name('volunteers.show');
+    Route::get('/benevoles/{user}/photo', [VolunteerController::class, 'photo'])->name('volunteers.photo');
 
     Route::get('/codes-invitation', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');
     Route::get('/codes-invitation/creer', [InvitationCodeController::class, 'create'])->name('invitation-codes.create');

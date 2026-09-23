@@ -10,94 +10,120 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
-            @include('admin.partials.nav')
+    <body class="bg-sand-50 text-[#1e1e24] antialiased">
+        @include('admin.partials.nav')
 
-            <h1 class="mb-6 text-lg font-semibold">Bénévoles — {{ $edition->name }}</h1>
+        @php
+            $field = 'h-10 w-full rounded-lg border border-sand-200 bg-white px-3 text-sm focus:border-brand-500 focus:ring-3 focus:ring-brand-500/15 focus:outline-none';
+        @endphp
 
-            <form method="GET" action="{{ route('admin.volunteers.index') }}" class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                <input type="text" name="prenom" value="{{ request('prenom') }}" placeholder="Prénom"
-                    class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
+        <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            <div class="mb-6 flex flex-wrap items-baseline justify-between gap-2">
+                <h1 class="font-heading text-2xl font-bold">Bénévoles</h1>
+                <p class="text-sm text-stone-500">{{ $volunteers->total() }} résultat(s) · {{ $edition->name }}</p>
+            </div>
 
-                <input type="text" name="nom" value="{{ request('nom') }}" placeholder="Nom"
-                    class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
+            @include('admin.partials.flash')
 
-                <select name="statut" class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
+            <form method="GET" action="{{ route('admin.volunteers.index') }}" class="mb-6 grid grid-cols-2 gap-2 rounded-xl border border-sand-200 bg-white p-3 sm:grid-cols-3 lg:grid-cols-6">
+                <input type="text" name="prenom" value="{{ request('prenom') }}" placeholder="Prénom" aria-label="Prénom" class="{{ $field }}">
+                <input type="text" name="nom" value="{{ request('nom') }}" placeholder="Nom" aria-label="Nom" class="{{ $field }}">
+
+                <select name="statut" aria-label="Statut" class="{{ $field }}">
                     <option value="">Tous les statuts</option>
                     <option value="valide" @selected(request('statut') === 'valide')>Validé</option>
                     <option value="attente" @selected(request('statut') === 'attente')>En attente</option>
                 </select>
 
-                <select name="mission" class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
+                <select name="mission" aria-label="Mission" class="{{ $field }}">
                     <option value="">Toutes les missions</option>
                     @foreach ($missions as $mission)
                         <option value="{{ $mission->id }}" @selected((int) request('mission') === $mission->id)>{{ $mission->name }}</option>
                     @endforeach
                 </select>
 
-                <select name="jour" class="rounded-md border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-900">
+                <select name="jour" aria-label="Jour" class="{{ $field }}">
                     <option value="">Tous les jours</option>
                     @foreach ($days as $day)
                         <option value="{{ $day->id }}" @selected((int) request('jour') === $day->id)>{{ $day->label }} ({{ $day->date->format('d/m') }})</option>
                     @endforeach
                 </select>
 
-                <div class="col-span-2 flex gap-2 sm:col-span-3 lg:col-span-5">
-                    <button type="submit"
-                        class="rounded-md bg-brand-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-600">
+                <div class="flex gap-2">
+                    <button type="submit" class="h-10 flex-1 rounded-full bg-brand-500 px-4 text-sm font-semibold text-white hover:bg-brand-600">
                         Rechercher
                     </button>
-                    <a href="{{ route('admin.volunteers.index') }}" class="rounded-md bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200">
-                        Réinitialiser
+                    <a href="{{ route('admin.volunteers.index') }}" title="Réinitialiser" aria-label="Réinitialiser"
+                        class="flex size-10 shrink-0 items-center justify-center rounded-full bg-sand-100 text-stone-600 hover:bg-sand-200">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>
                     </a>
                 </div>
             </form>
 
-            <table class="w-full text-left text-sm">
-                <thead>
-                    <tr class="border-b border-gray-300 dark:border-gray-600">
-                        <th class="py-2 pr-4">Prénom</th>
-                        <th class="py-2 pr-4">Nom</th>
-                        <th class="py-2 pr-4">E-mail</th>
-                        <th class="py-2 pr-4">Mineur</th>
-                        <th class="py-2 pr-4">Statut</th>
-                        <th class="py-2">Missions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($volunteers as $volunteer)
-                        <tr class="border-b border-gray-200 dark:border-gray-800">
-                            <td class="py-2 pr-4">{{ $volunteer->first_name }}</td>
-                            <td class="py-2 pr-4">{{ $volunteer->last_name }}</td>
-                            <td class="py-2 pr-4">{{ $volunteer->email }}</td>
-                            <td class="py-2 pr-4">{{ $volunteer->is_minor ? 'Oui' : 'Non' }}</td>
-                            <td class="py-2 pr-4">
-                                <span @class([
-                                    'rounded-full px-2 py-0.5 text-xs font-medium',
-                                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' => $volunteer->pivot->is_validated,
-                                    'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' => ! $volunteer->pivot->is_validated,
-                                ])>
-                                    {{ $volunteer->pivot->is_validated ? 'validé' : 'en attente' }}
-                                </span>
-                            </td>
-                            <td class="py-2">
-                                {{ $volunteer->volunteerAssignments->pluck('missionSlot.mission.name')->unique()->join(', ') ?: '—' }}
-                            </td>
-                        </tr>
-                    @empty
+            <div class="overflow-hidden rounded-xl border border-sand-200 bg-white">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-sand-100/60 text-xs tracking-wider text-stone-500 uppercase">
                         <tr>
-                            <td colspan="6" class="py-4 text-center text-gray-500 dark:text-gray-400">
-                                Aucun bénévole ne correspond à ces critères.
-                            </td>
+                            <th class="px-4 py-3 font-semibold">Bénévole</th>
+                            <th class="px-4 py-3 font-semibold">Statut</th>
+                            <th class="hidden px-4 py-3 font-semibold md:table-cell">Planning</th>
+                            <th class="px-4 py-3"><span class="sr-only">Détail</span></th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-sand-100">
+                        @forelse ($volunteers as $volunteer)
+                            @php
+                                $sortedAssignments = $volunteer->volunteerAssignments->sortBy(fn ($assignment) => [
+                                    $assignment->missionSlot->timeSlot->eventDay->date,
+                                    $assignment->missionSlot->timeSlot->starts_at,
+                                ]);
+                            @endphp
+                            <tr class="align-top">
+                                <td class="px-4 py-3">
+                                    <p class="font-semibold">
+                                        <a href="{{ route('admin.volunteers.show', $volunteer) }}" class="hover:text-brand-500 hover:underline">{{ $volunteer->first_name }} {{ $volunteer->last_name }}</a>
+                                        @if ($volunteer->is_minor)
+                                            <span class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Mineur</span>
+                                        @endif
+                                    </p>
+                                    <p class="break-all text-stone-500">{{ $volunteer->email }}</p>
+                                    <div class="mt-2 md:hidden">
+                                        @include('admin.volunteers.partials.schedule', ['assignments' => $sortedAssignments])
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span @class([
+                                        'rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap',
+                                        'bg-emerald-100 text-emerald-800' => $volunteer->pivot->is_validated,
+                                        'bg-sand-100 text-stone-600' => ! $volunteer->pivot->is_validated,
+                                    ])>
+                                        {{ $volunteer->pivot->is_validated ? 'Validé' : 'En attente' }}
+                                    </span>
+                                </td>
+                                <td class="hidden px-4 py-3 md:table-cell">
+                                    @include('admin.volunteers.partials.schedule', ['assignments' => $sortedAssignments])
+                                </td>
+                                <td class="px-2 py-3 text-right">
+                                    <a href="{{ route('admin.volunteers.show', $volunteer) }}" aria-label="Voir le détail de {{ $volunteer->first_name }} {{ $volunteer->last_name }}"
+                                        class="inline-flex size-8 items-center justify-center rounded-full text-stone-400 hover:bg-sand-100 hover:text-brand-500">
+                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-4 py-8 text-center text-stone-500">
+                                    Aucun bénévole ne correspond à ces critères.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
             <div class="mt-4">
                 {{ $volunteers->links() }}
             </div>
-        </div>
+        </main>
     </body>
 </html>
