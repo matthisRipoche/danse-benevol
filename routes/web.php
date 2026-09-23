@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\VolunteerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -63,4 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/mon-planning/creneaux/{missionSlot}', [PlanningController::class, 'reserve'])->name('planning.reserve');
     Route::delete('/mon-planning/creneaux/{missionSlot}', [PlanningController::class, 'cancel'])->name('planning.cancel');
     Route::post('/mon-planning/valider', [PlanningController::class, 'finalize'])->name('planning.finalize');
+
+    Route::get('/mon-profil', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/mon-profil/photo', [ProfileController::class, 'photo'])->name('profile.photo');
 });
