@@ -10,15 +10,12 @@ use App\Models\AuditLog;
 use App\Models\Edition;
 use App\Models\InvitationCode;
 use App\Models\User;
+use App\Support\SpreadsheetReader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
-use OpenSpout\Reader\CSV\Options as CsvOptions;
-use OpenSpout\Reader\CSV\Reader as CsvReader;
-use OpenSpout\Reader\XLSX\Reader as XlsxReader;
 
 class InvitationCodeController extends Controller
 {
@@ -74,9 +71,9 @@ class InvitationCodeController extends Controller
     /**
      * Create and send an invitation code to every valid candidate e-mail of an Excel or CSV file.
      */
-    public function import(ImportInvitationCodesRequest $request): RedirectResponse
+    public function import(ImportInvitationCodesRequest $request, SpreadsheetReader $spreadsheetReader): RedirectResponse
     {
-        $cells = $this->readFirstColumn($request->file('file'));
+        $cells = array_filter(array_map(fn (array $row) => $row[0] ?? '', $spreadsheetReader->rows($request->file('file'))));
 
         if (count($cells) > self::MAX_IMPORT_ROWS) {
             return back()->with('error', 'Le fichier dépasse '.self::MAX_IMPORT_ROWS.' lignes : découpe-le en plusieurs imports.');
@@ -164,42 +161,5 @@ class InvitationCodeController extends Controller
         Mail::to($code->email)->send(new InvitationCodeMail($code));
 
         return $code;
-    }
-
-    /**
-     * Read the non-empty values of the first column of the first sheet, keyed by line number.
-     *
-     * @return array<int, string>
-     */
-    private function readFirstColumn(UploadedFile $file): array
-    {
-        $path = $file->getRealPath();
-
-        if (strtolower($file->getClientOriginalExtension()) === 'xlsx') {
-            $reader = new XlsxReader;
-        } else {
-            $firstLine = (string) strtok((string) file_get_contents($path, length: 4096), "\n");
-            $delimiter = substr_count($firstLine, ';') > substr_count($firstLine, ',') ? ';' : ',';
-            $reader = new CsvReader(new CsvOptions(SHOULD_PRESERVE_EMPTY_ROWS: true, FIELD_DELIMITER: $delimiter));
-        }
-
-        $reader->open($path);
-        $cells = [];
-
-        foreach ($reader->getSheetIterator() as $sheet) {
-            foreach ($sheet->getRowIterator() as $line => $row) {
-                $value = trim((string) ($row->toArray()[0] ?? ''));
-
-                if ($value !== '') {
-                    $cells[$line] = $value;
-                }
-            }
-
-            break;
-        }
-
-        $reader->close();
-
-        return $cells;
     }
 }

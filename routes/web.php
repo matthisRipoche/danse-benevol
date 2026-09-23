@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\InvitationCodeController;
+use App\Http\Controllers\Admin\MissionController;
 use App\Http\Controllers\Admin\RestrictedMissionController;
+use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\VolunteerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -63,6 +65,21 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('/exports', [ExportController::class, 'index'])->name('exports.index');
     Route::get('/exports/{type}/{format}', [ExportController::class, 'download'])->name('exports.download');
+
+    Route::get('/missions', [MissionController::class, 'index'])->name('missions.index');
+    Route::get('/missions/creer', [MissionController::class, 'create'])->name('missions.create');
+    Route::post('/missions', [MissionController::class, 'store'])->name('missions.store');
+    Route::get('/missions/importer', [MissionController::class, 'importForm'])->name('missions.import');
+    Route::post('/missions/importer', [MissionController::class, 'import'])->name('missions.import.store');
+    Route::get('/missions/{mission}/modifier', [MissionController::class, 'edit'])->name('missions.edit');
+    Route::put('/missions/{mission}', [MissionController::class, 'update'])->name('missions.update');
+    Route::delete('/missions/{mission}', [MissionController::class, 'destroy'])->name('missions.destroy');
+
+    Route::get('/jours-et-creneaux', [ScheduleController::class, 'index'])->name('schedule.index');
+    Route::post('/jours', [ScheduleController::class, 'storeDay'])->name('schedule.days.store');
+    Route::delete('/jours/{eventDay}', [ScheduleController::class, 'destroyDay'])->name('schedule.days.destroy');
+    Route::post('/jours/{eventDay}/creneaux', [ScheduleController::class, 'storeTimeSlot'])->name('schedule.time-slots.store');
+    Route::delete('/creneaux/{timeSlot}', [ScheduleController::class, 'destroyTimeSlot'])->name('schedule.time-slots.destroy');
 
     Route::get('/postes-restreints', [RestrictedMissionController::class, 'index'])->name('restricted-missions.index');
     Route::post('/postes-restreints/{missionSlot}/assigner', [RestrictedMissionController::class, 'assign'])->name('restricted-missions.assign');

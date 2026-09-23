@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['edition_id', 'name', 'description', 'is_public'])]
+#[Fillable(['edition_id', 'name', 'description', 'is_public', 'default_capacity'])]
 class Mission extends Model
 {
     /** @use HasFactory<MissionFactory> */
@@ -24,6 +24,7 @@ class Mission extends Model
     {
         return [
             'is_public' => 'boolean',
+            'default_capacity' => 'integer',
         ];
     }
 

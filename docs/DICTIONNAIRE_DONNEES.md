@@ -120,6 +120,7 @@ Postes proposés sur une édition (Accueil exposants, Vestiaires, etc.).
 | name | VARCHAR(255) | NOT NULL | |
 | description | TEXT | NULLABLE | Consignes affichées au bénévole |
 | is_public | BOOLEAN | DEFAULT TRUE | `false` pour les postes sensibles (Billetterie, Caisse) : hors-planning public, attribution manuelle uniquement |
+| default_capacity | SMALLINT UNSIGNED | DEFAULT 0 | Places par créneau appliquées à la création de la mission et à chaque nouveau créneau horaire ; ajustables ensuite créneau par créneau (`mission_slots.capacity`) |
 
 ### `mission_slots`
 
