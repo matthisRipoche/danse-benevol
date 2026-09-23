@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Edition;
 use App\Models\EventDay;
 use App\Models\Mission;
 use App\Models\User;
 use App\Models\VolunteerAssignment;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -51,6 +53,12 @@ class VolunteerController extends Controller
                 'volunteerAssignments.missionSlot.timeSlot.eventDay',
                 fn ($d) => $d->where('event_days.id', $request->integer('jour'))
             );
+        }
+
+        if ($request->input('mineur') === 'a_valider') {
+            $query->where('is_minor', true)->whereNull('minor_validated_at');
+        } elseif ($request->input('mineur') === 'valide') {
+            $query->where('is_minor', true)->whereNotNull('minor_validated_at');
         }
 
         $volunteers = $query
@@ -110,5 +118,29 @@ class VolunteerController extends Controller
         abort_if(! $user->photo_path || ! Storage::disk('local')->exists($user->photo_path), 404);
 
         return Storage::disk('local')->response($user->photo_path);
+    }
+
+    /**
+     * Validate a minor volunteer's profile.
+     */
+    public function validateMinor(Request $request, User $user): RedirectResponse
+    {
+        $edition = Edition::active();
+
+        abort_unless($user->editions()->where('editions.id', $edition->id)->exists(), 404);
+
+        if (! $user->is_minor) {
+            return back()->with('error', "Ce bénévole n'est pas déclaré mineur.");
+        }
+
+        if ($user->minor_validated_at) {
+            return back()->with('error', 'Ce profil est déjà validé.');
+        }
+
+        $user->forceFill(['minor_validated_at' => now()])->save();
+
+        AuditLog::record($request->user(), 'user.minor_validated', $user);
+
+        return back()->with('status', "Profil de {$user->first_name} {$user->last_name} validé.");
     }
 }

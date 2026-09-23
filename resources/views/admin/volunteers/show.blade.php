@@ -26,6 +26,8 @@
                 Retour à la liste
             </a>
 
+            @include('admin.partials.flash')
+
             <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
                 <section class="rounded-xl border border-sand-200 bg-white p-5 lg:sticky lg:top-24">
                     <div class="flex items-center gap-4">
@@ -47,9 +49,7 @@
                                     'bg-sand-100 text-stone-600' => ! $isValidated,
                                 ])>{{ $isValidated ? 'Planning validé' : 'Planning en attente' }}</span>
                                 @if ($volunteer->is_minor)
-                                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
-                                        Mineur{{ $volunteer->minor_validated_at ? ' · validé' : ' · à valider' }}
-                                    </span>
+                                    @include('admin.volunteers.partials.minor-status')
                                 @endif
                             </div>
                         </div>

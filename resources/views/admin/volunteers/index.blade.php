@@ -25,7 +25,7 @@
 
             @include('admin.partials.flash')
 
-            <form method="GET" action="{{ route('admin.volunteers.index') }}" class="mb-6 grid grid-cols-2 gap-2 rounded-xl border border-sand-200 bg-white p-3 sm:grid-cols-3 lg:grid-cols-6">
+            <form method="GET" action="{{ route('admin.volunteers.index') }}" class="mb-6 grid grid-cols-2 gap-2 rounded-xl border border-sand-200 bg-white p-3 sm:grid-cols-3 lg:grid-cols-7">
                 <input type="text" name="prenom" value="{{ request('prenom') }}" placeholder="Prénom" aria-label="Prénom" class="{{ $field }}">
                 <input type="text" name="nom" value="{{ request('nom') }}" placeholder="Nom" aria-label="Nom" class="{{ $field }}">
 
@@ -47,6 +47,12 @@
                     @foreach ($days as $day)
                         <option value="{{ $day->id }}" @selected((int) request('jour') === $day->id)>{{ $day->label }} ({{ $day->date->format('d/m') }})</option>
                     @endforeach
+                </select>
+
+                <select name="mineur" aria-label="Profil mineur" class="{{ $field }}">
+                    <option value="">Mineurs : tous</option>
+                    <option value="a_valider" @selected(request('mineur') === 'a_valider')>Mineurs à valider</option>
+                    <option value="valide" @selected(request('mineur') === 'valide')>Mineurs validés</option>
                 </select>
 
                 <div class="flex gap-2">
@@ -82,11 +88,13 @@
                                 <td class="px-4 py-3">
                                     <p class="font-semibold">
                                         <a href="{{ route('admin.volunteers.show', $volunteer) }}" class="hover:text-brand-500 hover:underline">{{ $volunteer->first_name }} {{ $volunteer->last_name }}</a>
-                                        @if ($volunteer->is_minor)
-                                            <span class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Mineur</span>
-                                        @endif
                                     </p>
                                     <p class="break-all text-stone-500">{{ $volunteer->email }}</p>
+                                    @if ($volunteer->is_minor)
+                                        <div class="mt-1.5">
+                                            @include('admin.volunteers.partials.minor-status')
+                                        </div>
+                                    @endif
                                     <div class="mt-2 md:hidden">
                                         @include('admin.volunteers.partials.schedule', ['assignments' => $sortedAssignments])
                                     </div>
