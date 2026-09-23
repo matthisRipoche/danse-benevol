@@ -10,76 +10,75 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
-            @include('admin.partials.nav')
+    <body class="bg-sand-50 text-[#1e1e24] antialiased">
+        @include('admin.partials.nav')
 
-            <div class="mb-6 flex items-center justify-between">
-                <h1 class="text-lg font-semibold">Codes d'invitation</h1>
+        @php
+            $statusLabels = ['pending' => 'En attente', 'used' => 'Utilisé', 'revoked' => 'Révoqué'];
+        @endphp
+
+        <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <h1 class="font-heading text-2xl font-bold">Codes d'invitation</h1>
                 <a href="{{ route('admin.invitation-codes.create') }}"
-                    class="rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600">
+                    class="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-600">
+                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                     Nouveau code
                 </a>
             </div>
 
-            @if (session('status'))
-                <div class="mb-4 rounded-md border border-green-300 bg-green-50 p-4 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
-                    {{ session('status') }}
-                </div>
-            @endif
+            @include('admin.partials.flash')
 
-            @if (session('error'))
-                <div class="mb-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <table class="w-full text-left text-sm">
-                <thead>
-                    <tr class="border-b border-gray-300 dark:border-gray-600">
-                        <th class="py-2 pr-4">E-mail</th>
-                        <th class="py-2 pr-4">Code</th>
-                        <th class="py-2 pr-4">Statut</th>
-                        <th class="py-2 pr-4">Expire le</th>
-                        <th class="py-2"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($codes as $code)
-                        <tr class="border-b border-gray-200 dark:border-gray-800">
-                            <td class="py-2 pr-4">{{ $code->email }}</td>
-                            <td class="py-2 pr-4 font-mono">{{ $code->code }}</td>
-                            <td class="py-2 pr-4">
-                                <span @class([
-                                    'rounded-full px-2 py-0.5 text-xs font-medium',
-                                    'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200' => $code->status === 'pending',
-                                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' => $code->status === 'used',
-                                    'bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300' => $code->status === 'revoked',
-                                ])>
-                                    {{ $code->status }}
-                                </span>
-                            </td>
-                            <td class="py-2 pr-4">{{ $code->expires_at?->format('d/m/Y') ?? '—' }}</td>
-                            <td class="py-2 text-right">
-                                @if ($code->status === 'pending')
-                                    <form method="POST" action="{{ route('admin.invitation-codes.revoke', $code) }}">
-                                        @csrf
-                                        <button type="submit" class="rounded-md bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700">
-                                            Révoquer
-                                        </button>
-                                    </form>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
+            <div class="overflow-hidden rounded-xl border border-sand-200 bg-white">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-sand-100/60 text-xs tracking-wider text-stone-500 uppercase">
                         <tr>
-                            <td colspan="5" class="py-4 text-center text-gray-500 dark:text-gray-400">
-                                Aucun code d'invitation pour le moment.
-                            </td>
+                            <th class="px-4 py-3 font-semibold">Code</th>
+                            <th class="px-4 py-3 font-semibold">Statut</th>
+                            <th class="hidden px-4 py-3 font-semibold sm:table-cell">Expire le</th>
+                            <th class="px-4 py-3"><span class="sr-only">Actions</span></th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody class="divide-y divide-sand-100">
+                        @forelse ($codes as $code)
+                            <tr>
+                                <td class="px-4 py-3">
+                                    <p class="font-mono font-semibold tracking-wider">{{ $code->code }}</p>
+                                    <p class="break-all text-stone-500">{{ $code->email }}</p>
+                                    <p class="text-xs text-stone-500 sm:hidden">Expire le {{ $code->expires_at?->format('d/m/Y') ?? '—' }}</p>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span @class([
+                                        'rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap',
+                                        'bg-amber-100 text-amber-800' => $code->status === 'pending',
+                                        'bg-emerald-100 text-emerald-800' => $code->status === 'used',
+                                        'bg-sand-100 text-stone-500' => $code->status === 'revoked',
+                                    ])>
+                                        {{ $statusLabels[$code->status] ?? $code->status }}
+                                    </span>
+                                </td>
+                                <td class="hidden px-4 py-3 text-stone-600 sm:table-cell">{{ $code->expires_at?->format('d/m/Y') ?? '—' }}</td>
+                                <td class="px-4 py-3 text-right">
+                                    @if ($code->status === 'pending')
+                                        <form method="POST" action="{{ route('admin.invitation-codes.revoke', $code) }}">
+                                            @csrf
+                                            <button type="submit" class="rounded-full px-3 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-50">
+                                                Révoquer
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-4 py-8 text-center text-stone-500">
+                                    Aucun code d'invitation pour le moment.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </body>
 </html>

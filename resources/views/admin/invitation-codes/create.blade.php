@@ -10,42 +10,35 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] antialiased">
-        <div class="flex min-h-screen flex-col items-center justify-center p-6">
-            <div class="w-full max-w-md">
-                @include('admin.partials.nav')
+    <body class="bg-sand-50 text-[#1e1e24] antialiased">
+        @include('admin.partials.nav')
 
-                <h1 class="mb-6 text-lg font-semibold">Nouveau code d'invitation</h1>
+        <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            <a href="{{ route('admin.invitation-codes.index') }}" class="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-stone-500 hover:text-brand-500">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+                Retour à la liste
+            </a>
 
-                @if ($errors->any())
-                    <div class="mb-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
-                        <ul class="list-inside list-disc">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+            <div class="max-w-md rounded-xl border border-sand-200 bg-white p-6">
+                <h1 class="mb-1 font-heading text-xl font-bold">Nouveau code d'invitation</h1>
+                <p class="mb-5 text-sm text-stone-500">Le code est envoyé à cet e-mail et ne pourra servir qu'à lui.</p>
+
+                @include('admin.partials.flash')
 
                 <form method="POST" action="{{ route('admin.invitation-codes.store') }}" class="flex flex-col gap-4">
                     @csrf
 
-                    <div>
-                        <label for="email" class="mb-1 block text-sm font-medium">E-mail du candidat</label>
+                    <div class="flex flex-col gap-1">
+                        <label for="email" class="text-sm font-medium text-stone-600">E-mail du candidat</label>
                         <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-900">
+                            class="h-11 w-full rounded-lg border border-sand-200 bg-white px-3 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/15 focus:outline-none @error('email') border-red-400 @enderror">
                     </div>
 
-                    <button type="submit"
-                        class="mt-2 rounded-md bg-brand-500 px-5 py-2 text-sm font-medium text-white hover:bg-brand-600">
+                    <button type="submit" class="h-11 rounded-full bg-brand-500 font-semibold text-white shadow-sm hover:bg-brand-600">
                         Créer le code
                     </button>
                 </form>
-
-                <a href="{{ route('admin.invitation-codes.index') }}" class="mt-4 inline-block rounded-md bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200">
-                    Retour à la liste
-                </a>
             </div>
-        </div>
+        </main>
     </body>
 </html>
