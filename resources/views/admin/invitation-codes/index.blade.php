@@ -20,14 +20,36 @@
         <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <h1 class="font-heading text-2xl font-bold">Codes d'invitation</h1>
-                <a href="{{ route('admin.invitation-codes.create') }}"
-                    class="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-600">
-                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                    Nouveau code
-                </a>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ route('admin.invitation-codes.import') }}"
+                        class="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm ring-1 ring-sand-200 hover:bg-sand-100">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                        Importer des candidats
+                    </a>
+                    <a href="{{ route('admin.invitation-codes.create') }}"
+                        class="inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-600">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        Nouveau code
+                    </a>
+                </div>
             </div>
 
             @include('admin.partials.flash')
+
+            @if (session('importSkipped'))
+                <details class="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" open>
+                    <summary class="cursor-pointer font-semibold">{{ count(session('importSkipped')) }} ligne(s) ignorée(s) lors de l'import</summary>
+                    <ul class="mt-2 flex flex-col gap-1">
+                        @foreach (session('importSkipped') as $skippedLine)
+                            <li>
+                                <span class="font-mono text-xs">Ligne {{ $skippedLine['line'] }}</span>
+                                · <span class="break-all">{{ $skippedLine['value'] }}</span>
+                                · {{ $skippedLine['reason'] }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </details>
+            @endif
 
             <div class="overflow-hidden rounded-xl border border-sand-200 bg-white">
                 <table class="w-full text-left text-sm">
