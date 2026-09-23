@@ -4,7 +4,7 @@ Ce document décrit le schéma de base de données dérivé du [cahier des charg
 
 ## Conventions
 
-- SGBD : MySQL 8.0.
+- SGBD : MariaDB 10.11 LTS.
 - Toutes les tables ont `id` (BIGINT UNSIGNED, clé primaire auto-incrémentée) sauf mention contraire.
 - Toutes les tables ont `created_at` / `updated_at` (TIMESTAMP, gérés par Eloquent) sauf mention contraire — non listés colonne par colonne ci-dessous pour alléger la lecture.
 - `FK` = clé étrangère. Sauf mention contraire, suppression en `CASCADE` quand l'enfant n'a pas de sens sans son parent (ex : `time_slots` sans `event_days`), et en `RESTRICT`/`SET NULL` quand la donnée doit être conservée pour la traçabilité (ex : logs d'audit).

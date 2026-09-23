@@ -1,19 +1,19 @@
 services:
-    mysql:
-        image: mysql:8.0
-        container_name: danse-benevol-mysql
+    mariadb:
+        image: mariadb:10.11
+        container_name: danse-benevol-mariadb
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: danse_benevol
-            MYSQL_USER: danse_benevol
-            MYSQL_PASSWORD: danse_benevol
-            MYSQL_ROOT_PASSWORD: root
+            MARIADB_DATABASE: danse_benevol
+            MARIADB_USER: danse_benevol
+            MARIADB_PASSWORD: danse_benevol
+            MARIADB_ROOT_PASSWORD: root
         ports:
             - "3307:3306"
         volumes:
-            - danse-benevol-mysql-data:/var/lib/mysql
+            - danse-benevol-mariadb-data:/var/lib/mysql
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
             interval: 5s
             timeout: 5s
             retries: 10
@@ -23,15 +23,15 @@ services:
         container_name: danse-benevol-phpmyadmin
         restart: unless-stopped
         environment:
-            PMA_HOST: mysql
+            PMA_HOST: mariadb
             PMA_PORT: 3306
             PMA_USER: danse_benevol
             PMA_PASSWORD: danse_benevol
         ports:
             - "8081:80"
         depends_on:
-            mysql:
+            mariadb:
                 condition: service_healthy
 
 volumes:
-    danse-benevol-mysql-data:
+    danse-benevol-mariadb-data:

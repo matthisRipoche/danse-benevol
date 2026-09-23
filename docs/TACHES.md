@@ -6,7 +6,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 
 ## Infrastructure & outillage (hors périmètre du cahier des charges, mais nécessaire au dev)
 
-- [x] ✅ Environnement MySQL local via Docker (`docker-compose.yml`)
+- [x] ✅ Environnement MariaDB local via Docker (`docker-compose.yml`)
 - [x] ✅ phpMyAdmin en local (Docker, dev uniquement)
 - [x] ✅ Bandeau d'URLs locales au lancement de `php artisan serve` / `composer run dev`
 
