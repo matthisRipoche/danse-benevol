@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Database\Factories\TimeSlotFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,5 +50,13 @@ class TimeSlot extends Model
     public function volunteerAssignments(): HasMany
     {
         return $this->hasMany(VolunteerAssignment::class);
+    }
+
+    /**
+     * Length of the time slot, in minutes.
+     */
+    public function durationInMinutes(): int
+    {
+        return (int) Carbon::parse($this->starts_at)->diffInMinutes(Carbon::parse($this->ends_at));
     }
 }
