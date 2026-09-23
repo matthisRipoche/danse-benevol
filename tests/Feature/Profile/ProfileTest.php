@@ -48,6 +48,7 @@ test('a validated volunteer sees their badge, missions and total engagement time
         ->assertSee('Planning validé &amp; badge actif', false)
         ->assertSee('Camille Dupont')
         ->assertSee('SDLD-ABCD1234')
+        ->assertSee('QR code du badge SDLD-ABCD1234')
         ->assertSee('Accueil exposants')
         ->assertSee('Vestiaires')
         ->assertSee('3 h30');
@@ -62,6 +63,7 @@ test('a volunteer whose planning is not validated sees a pending badge without a
     $response->assertOk()
         ->assertSee('Badge en attente')
         ->assertSee('ID attribué à la validation')
+        ->assertSee('QR code généré à la validation')
         ->assertDontSee('SDLD-');
 });
 

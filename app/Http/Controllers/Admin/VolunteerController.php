@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Edition;
+use App\Models\EditionVolunteer;
 use App\Models\EventDay;
 use App\Models\Mission;
 use App\Models\User;
@@ -108,6 +109,16 @@ class VolunteerController extends Controller
             'validatedAt' => $editionVolunteer->pivot->validated_at ? Carbon::parse($editionVolunteer->pivot->validated_at) : null,
             'badgeUid' => $editionVolunteer->pivot->badge_uid,
         ]);
+    }
+
+    /**
+     * Resolve a scanned badge QR code to the volunteer's detail page.
+     */
+    public function badge(string $badgeUid): RedirectResponse
+    {
+        $editionVolunteer = EditionVolunteer::where('badge_uid', $badgeUid)->firstOrFail();
+
+        return redirect()->route('admin.volunteers.show', $editionVolunteer->user_id);
     }
 
     /**

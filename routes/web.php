@@ -50,6 +50,7 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/benevoles', [VolunteerController::class, 'index'])->name('volunteers.index');
     Route::get('/benevoles/{user}', [VolunteerController::class, 'show'])->name('volunteers.show');
     Route::get('/benevoles/{user}/photo', [VolunteerController::class, 'photo'])->name('volunteers.photo');
+    Route::get('/badges/{badgeUid}', [VolunteerController::class, 'badge'])->name('volunteers.badge');
     Route::post('/benevoles/{user}/valider-mineur', [VolunteerController::class, 'validateMinor'])->name('volunteers.validate-minor');
 
     Route::get('/codes-invitation', [InvitationCodeController::class, 'index'])->name('invitation-codes.index');

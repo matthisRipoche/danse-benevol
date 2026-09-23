@@ -82,3 +82,27 @@ test('an admin can load a volunteer\'s photo', function () {
         ->get(route('admin.volunteers.photo', $volunteer))
         ->assertOk();
 });
+
+test('scanning a badge QR code takes an admin to the volunteer\'s detail page', function () {
+    [$edition, $volunteer] = volunteerWithSchedule();
+    $volunteer->editions()->updateExistingPivot($edition->id, ['badge_uid' => 'abcd1234-0000-0000-0000-000000000000']);
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->get(route('admin.volunteers.badge', 'abcd1234-0000-0000-0000-000000000000'))
+        ->assertRedirect(route('admin.volunteers.show', $volunteer));
+});
+
+test('scanning an unknown badge QR code returns 404', function () {
+    $this->actingAs(User::factory()->admin()->create())
+        ->get(route('admin.volunteers.badge', 'unknown-badge'))
+        ->assertNotFound();
+});
+
+test('a volunteer cannot resolve a badge QR code', function () {
+    [$edition, $volunteer] = volunteerWithSchedule();
+    $volunteer->editions()->updateExistingPivot($edition->id, ['badge_uid' => 'abcd1234-0000-0000-0000-000000000000']);
+
+    $this->actingAs($volunteer)
+        ->get(route('admin.volunteers.badge', 'abcd1234-0000-0000-0000-000000000000'))
+        ->assertForbidden();
+});
