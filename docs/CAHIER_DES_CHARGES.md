@@ -92,12 +92,12 @@ Billetterie, Caisse : hors-planning public, attribution manuelle par l'admin uni
 
 ## Décisions techniques (à compléter au fil du projet)
 
-- Stack : Laravel (PHP 8.5), base de données **MySQL 8.0**.
-- **Base de données locale** : MySQL tourne dans un conteneur Docker dédié au projet (`docker-compose.yml`, service `mysql`), pour ne pas dépendre du MySQL système de la machine.
+- Stack : Laravel (PHP 8.5), base de données **MariaDB 10.11 LTS** (connexion Laravel `mariadb`). Choisie à la place de MySQL 8.0 car c'est la version fournie par Debian 12 / Ubuntu 24.04 : installée et mise à jour via `apt` sur le VPS de production.
+- **Base de données locale** : MariaDB tourne dans un conteneur Docker dédié au projet (`docker-compose.yml`, service `mariadb`), avec la même version qu'en production, pour ne pas dépendre du SGBD système de la machine.
   - Port hôte : `3307` (le 3306 est déjà pris par un MySQL système local).
   - Base : `danse_benevol`, user `danse_benevol` / password `danse_benevol` (dev uniquement).
-  - Démarrage : `docker compose up -d mysql`.
-  - En production, un environnement MySQL différent sera utilisé (ex. Laravel Cloud) — ces identifiants ne concernent que le développement local.
+  - Démarrage : `docker compose up -d mariadb`.
+  - En production, MariaDB est installé directement sur le VPS avec ses propres identifiants — ceux-ci ne concernent que le développement local.
 - **phpMyAdmin (local uniquement)** : service `phpmyadmin` dans `docker-compose.yml`, accessible sur http://localhost:8081 (identifiants : `danse_benevol` / `danse_benevol`). N'est jamais déployé en production.
 - *(Cette section sera enrichie au fur et à mesure des décisions prises pendant le projet.)*
 
