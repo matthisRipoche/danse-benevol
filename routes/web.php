@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Admin\RestrictedMissionController;
 use App\Http\Controllers\Admin\VolunteerController;
@@ -59,6 +60,9 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
     Route::post('/codes-invitation/importer', [InvitationCodeController::class, 'import'])->name('invitation-codes.import.store');
     Route::post('/codes-invitation', [InvitationCodeController::class, 'store'])->name('invitation-codes.store');
     Route::post('/codes-invitation/{invitationCode}/revoquer', [InvitationCodeController::class, 'revoke'])->name('invitation-codes.revoke');
+
+    Route::get('/exports', [ExportController::class, 'index'])->name('exports.index');
+    Route::get('/exports/{type}/{format}', [ExportController::class, 'download'])->name('exports.download');
 
     Route::get('/postes-restreints', [RestrictedMissionController::class, 'index'])->name('restricted-missions.index');
     Route::post('/postes-restreints/{missionSlot}/assigner', [RestrictedMissionController::class, 'assign'])->name('restricted-missions.assign');

@@ -55,7 +55,9 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [ ] ⬜ Réinitialisation des identifiants par un admin
 - [x] ✅ Validation des profils mineurs — filtre + action sur la page `Admin\VolunteerController`
 - [ ] ⬜ Génération automatique des badges (Photo, Nom, Prénom, "BÉNÉVOLE", ID unique, QR code) — `badge_uid` déjà en base
-- [ ] ⬜ Exports Excel / CSV / PDF (plannings, listes par mission, fiches contact)
+- [x] ✅ Exports Excel / CSV (planning général, listes par mission, fiches contact) — `Admin\ExportController`, OpenSpout, téléchargements tracés dans `audit_logs`
+- [ ] ⬜ Exports PDF (plannings, listes par mission, fiches contact)
+- [x] ✅ Import Excel / CSV de candidats : création et envoi d'un code d'invitation par e-mail valide, rapport des lignes ignorées — `Admin\InvitationCodeController`
 - [ ] 🚧 Log d'audit horodaté des actions admin — branché sur la création/révocation de codes d'invitation et l'attribution/retrait de postes restreints ; pas encore d'UI de consultation (cf. fonctionnalités avancées)
 - [ ] ⬜ Gestion multi-éditions : création, archivage, consultation des éditions passées (le modèle `Edition` est déjà pensé multi-éditions, UI à faire)
 
