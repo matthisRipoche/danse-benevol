@@ -1,0 +1,134 @@
+name: Déploiement
+
+# Chaque push sur main : tests → images Docker poussées sur GHCR → déploiement sur le VPS.
+# Le déploiement ne s'exécute que si la variable DEPLOY_ENABLED vaut « true »
+# (Settings → Secrets and variables → Actions → Variables). La variable APP_URL
+# (ex. https://benevoles.example.fr) sert à vérifier que le site répond ensuite.
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: production
+    cancel-in-progress: false
+
+jobs:
+    tests:
+        uses: ./.github/workflows/tests.yml
+
+    images:
+        name: Images Docker
+        needs: tests
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Nom des images
+              id: meta
+              run: echo "repository=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+            - uses: docker/setup-buildx-action@v3
+
+            - uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Image « app » (PHP-FPM et worker)
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  target: app
+                  push: true
+                  tags: |
+                      ${{ steps.meta.outputs.repository }}/app:${{ github.sha }}
+                      ${{ steps.meta.outputs.repository }}/app:latest
+                  cache-from: type=gha,scope=app
+                  cache-to: type=gha,mode=max,scope=app
+
+            - name: Image « web » (Caddy)
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  target: web
+                  push: true
+                  tags: |
+                      ${{ steps.meta.outputs.repository }}/web:${{ github.sha }}
+                      ${{ steps.meta.outputs.repository }}/web:latest
+                  cache-from: type=gha,scope=web
+                  cache-to: type=gha,mode=max,scope=web
+
+    deploy:
+        name: Déploiement sur le VPS
+        needs: images
+        if: vars.DEPLOY_ENABLED == 'true'
+        runs-on: ubuntu-latest
+        environment: production
+        permissions:
+            contents: read
+            packages: read
+
+        env:
+            VPS_HOST: ${{ secrets.VPS_HOST }}
+            VPS_USER: ${{ secrets.VPS_USER }}
+            VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+            DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/opt/danse-benevol' }}
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Accès SSH
+              env:
+                  SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+                  KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+              run: |
+                  install -m 700 -d ~/.ssh
+                  printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+                  chmod 600 ~/.ssh/id_deploy
+                  printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+            - name: Copie des fichiers de déploiement
+              run: |
+                  scp -i ~/.ssh/id_deploy -P "$VPS_PORT" \
+                      compose.prod.yml docker/deploy.sh docker/backup.sh \
+                      "$VPS_USER@$VPS_HOST:$DEPLOY_PATH/"
+
+            - name: Déploiement
+              env:
+                  REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  printf '%s' "$REGISTRY_TOKEN" | ssh -i ~/.ssh/id_deploy -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" \
+                      "docker login ghcr.io -u '${{ github.actor }}' --password-stdin \
+                      && '$DEPLOY_PATH/deploy.sh' '${{ github.sha }}' \
+                      ; status=\$?; docker logout ghcr.io > /dev/null; exit \$status"
+
+            - name: Vérification du site (/up)
+              env:
+                  APP_URL: ${{ vars.APP_URL }}
+              run: |
+                  if [ -z "$APP_URL" ]; then
+                      echo "::error::Variable APP_URL manquante (ex. https://benevoles.example.fr)"
+                      exit 1
+                  fi
+
+                  for attempt in $(seq 1 10); do
+                      if curl --fail --silent --show-error --max-time 10 "$APP_URL/up" > /dev/null; then
+                          echo "✓ $APP_URL/up répond : la nouvelle version est en ligne"
+                          exit 0
+                      fi
+                      echo "Tentative $attempt/10 : pas encore de réponse, nouvel essai dans 6 s"
+                      sleep 6
+                  done
+
+                  echo "::error::$APP_URL/up ne répond pas après le déploiement"
+                  exit 1
