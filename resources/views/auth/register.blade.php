@@ -80,6 +80,15 @@
                                     class="h-11 w-full rounded-lg border border-sand-200 bg-white pr-3 pl-10 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/15 focus:outline-none @error('phone') border-red-400 @enderror">
                             </div>
                         </div>
+
+                        <label class="flex cursor-pointer items-start gap-2.5 rounded-lg bg-sand-50 p-3 text-sm">
+                            <input type="checkbox" name="is_minor" value="1" @checked(old('is_minor'))
+                                class="mt-0.5 size-4 shrink-0 accent-brand-500">
+                            <span>
+                                <span class="font-semibold">J'ai moins de 18 ans</span>
+                                <span class="block text-stone-500">Ton profil sera vérifié par l'organisation avant la validation de ton planning.</span>
+                            </span>
+                        </label>
                     </fieldset>
 
                     <fieldset class="flex flex-col gap-3">
