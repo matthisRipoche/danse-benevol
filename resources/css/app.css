@@ -22,6 +22,12 @@
 
     --color-accent-500: #993300;
     --color-accent-600: #7a2900;
+
+    /* Tons sable / parchemin (maquette Stitch « Choreographic Warmth ») */
+    --color-sand-50: #faf7f2;
+    --color-sand-100: #f3ece2;
+    --color-sand-200: #e8dccb;
+    --color-sand-400: #c5a880;
 }
 
 /* Taille de police de base relevée : tous les utilitaires text-* (en rem) suivent. */
