@@ -79,21 +79,21 @@
 
                     <div class="z-10 mx-auto -mb-1 h-4 w-8 rounded-t-md bg-sand-200 shadow-inner print:hidden"></div>
                     <article @class([
-                        'relative w-full max-w-sm overflow-hidden rounded-2xl bg-gradient-to-b from-brand-600 to-brand-700 text-white shadow-xl [print-color-adjust:exact]',
+                        'relative w-full max-w-sm overflow-hidden rounded-2xl border border-sand-200 bg-white shadow-xl [print-color-adjust:exact] print:shadow-none',
                         'opacity-60 grayscale' => ! $isValidated,
                     ])>
-                        <div class="relative bg-brand-500/40 px-6 pt-6 pb-4">
-                            <div class="pointer-events-none absolute -top-12 -right-12 size-32 rounded-full bg-sand-400/20 blur-xl"></div>
-                            <div class="relative flex items-center justify-between gap-4">
-                                <span class="font-heading text-lg leading-tight font-bold">Salon de la Danse</span>
-                                <span class="text-right text-xs font-semibold tracking-widest text-sand-400 uppercase">{{ $edition->name }}</span>
+                        <div class="h-2 bg-brand-500"></div>
+                        <div class="px-6 pt-5 pb-2">
+                            <div class="flex items-center justify-between gap-4">
+                                <span class="font-heading text-lg leading-tight font-bold text-brand-500">Salon de la Danse</span>
+                                <span class="text-right text-xs font-semibold tracking-widest text-stone-500 uppercase">{{ $edition->name }}</span>
                             </div>
-                            <div class="mx-auto mt-4 h-2 w-14 rounded-full bg-black/30"></div>
+                            <div class="mx-auto mt-4 h-2 w-14 rounded-full bg-sand-200"></div>
                         </div>
 
-                        <div class="flex flex-col items-center px-6 pt-4 pb-6 text-center">
+                        <div class="flex flex-col items-center px-6 pt-3 pb-6 text-center">
                             <div class="relative mb-4">
-                                <div class="size-28 overflow-hidden rounded-full bg-sand-100 p-1 shadow-md">
+                                <div class="size-28 overflow-hidden rounded-full bg-sand-100 p-1 ring-4 ring-sand-100">
                                     @if ($user->photo_path)
                                         <img src="{{ route('profile.photo') }}" alt="Photo de {{ $user->first_name }}" class="size-full rounded-full object-cover">
                                     @else
@@ -103,24 +103,36 @@
                                     @endif
                                 </div>
                                 @if ($isValidated)
-                                    <div class="absolute right-1 bottom-0 flex size-7 items-center justify-center rounded-full bg-emerald-600 shadow">
+                                    <div class="absolute right-1 bottom-0 flex size-7 items-center justify-center rounded-full bg-emerald-600 text-white shadow ring-2 ring-white">
                                         <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                                     </div>
                                 @endif
                             </div>
 
                             <h2 class="font-heading text-2xl font-bold break-words">{{ $user->first_name }} {{ $user->last_name }}</h2>
-                            <span class="mt-2 rounded-full bg-sand-100 px-4 py-1 text-sm font-bold tracking-wider text-brand-600 uppercase">Bénévole</span>
-                            <span class="mt-2 font-mono text-xs tracking-widest text-brand-100">
-                                {{ $badgeId ? 'ID : '.$badgeId : 'ID attribué à la validation' }}
-                            </span>
+                            <span class="mt-2 rounded-full bg-brand-500 px-4 py-1 text-sm font-bold tracking-wider text-white uppercase">Bénévole</span>
+
+                            <div class="mt-5 flex flex-col items-center gap-2">
+                                @if ($badgeQrCode)
+                                    <div class="size-36 rounded-xl border border-sand-200 bg-white p-2 [&>svg]:size-full" role="img" aria-label="QR code du badge {{ $badgeId }}">
+                                        {!! $badgeQrCode !!}
+                                    </div>
+                                @else
+                                    <div class="flex size-36 items-center justify-center rounded-xl border-2 border-dashed border-sand-200 p-3 text-xs text-stone-500">
+                                        QR code généré à la validation
+                                    </div>
+                                @endif
+                                <span class="font-mono text-xs tracking-widest text-stone-500">
+                                    {{ $badgeId ? 'ID : '.$badgeId : 'ID attribué à la validation' }}
+                                </span>
+                            </div>
 
                             @if ($assignments->isNotEmpty())
                                 <div class="mt-5 w-full">
-                                    <span class="mb-2 block text-xs font-semibold tracking-wider text-white/70 uppercase">Postes</span>
+                                    <span class="mb-2 block text-xs font-semibold tracking-wider text-stone-500 uppercase">Postes</span>
                                     <div class="flex flex-wrap justify-center gap-1.5">
                                         @foreach ($assignments->pluck('missionSlot.mission.name')->unique() as $missionName)
-                                            <span class="rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold">{{ $missionName }}</span>
+                                            <span class="rounded-full bg-sand-100 px-2.5 py-1 text-xs font-semibold text-stone-700">{{ $missionName }}</span>
                                         @endforeach
                                     </div>
                                 </div>
@@ -128,14 +140,14 @@
                         </div>
 
                         @if ($edition->start_date && $edition->end_date)
-                            <div class="bg-black/40 px-4 py-2 text-center text-sm text-white/75">
+                            <div class="border-t border-sand-200 bg-sand-50 px-4 py-2 text-center text-sm text-stone-600">
                                 Angers • du {{ $edition->start_date->format('d/m') }} au {{ $edition->end_date->format('d/m/Y') }}
                             </div>
                         @endif
                     </article>
 
                     <p class="mt-4 w-full max-w-sm rounded-xl bg-sand-100 p-4 text-center text-sm text-stone-600 print:hidden">
-                        <strong class="text-stone-900">Conseil :</strong> garde ce badge sur ton téléphone ou imprime-le pour le présenter à ton arrivée.
+                        <strong class="text-stone-900">Conseil :</strong> garde ce badge sur ton téléphone ou imprime-le. Le QR code permet à l'équipe d'organisation de vérifier ton identité à ton arrivée.
                     </p>
                 </div>
 

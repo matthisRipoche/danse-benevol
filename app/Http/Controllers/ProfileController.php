@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Edition;
 use App\Models\VolunteerAssignment;
+use App\Support\QrCodeSvg;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -14,13 +15,15 @@ class ProfileController extends Controller
     /**
      * Display the volunteer's profile, badge and validated route sheet for the active edition.
      */
-    public function show(Request $request): View
+    public function show(Request $request, QrCodeSvg $qrCodeSvg): View
     {
         $user = $request->user();
         $edition = Edition::active();
         $editionVolunteer = $user->editions()->where('editions.id', $edition->id)->first();
 
         abort_if(! $editionVolunteer, 403, "Tu n'es pas inscrit à cette édition.");
+
+        $badgeUid = $editionVolunteer->pivot->badge_uid;
 
         $assignments = VolunteerAssignment::where('user_id', $user->id)
             ->whereHas('missionSlot.timeSlot.eventDay', fn ($q) => $q->where('edition_id', $edition->id))
@@ -38,7 +41,8 @@ class ProfileController extends Controller
             'assignments' => $assignments,
             'totalMinutes' => $assignments->sum(fn (VolunteerAssignment $assignment) => $assignment->missionSlot->timeSlot->durationInMinutes()),
             'isValidated' => (bool) $editionVolunteer->pivot->is_validated,
-            'badgeUid' => $editionVolunteer->pivot->badge_uid,
+            'badgeUid' => $badgeUid,
+            'badgeQrCode' => $badgeUid ? $qrCodeSvg->render(route('admin.volunteers.badge', $badgeUid)) : null,
         ]);
     }
 
