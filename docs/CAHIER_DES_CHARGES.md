@@ -97,7 +97,8 @@ Billetterie, Caisse : hors-planning public, attribution manuelle par l'admin uni
   - Port hôte : `3307` (le 3306 est déjà pris par un MySQL système local).
   - Base : `danse_benevol`, user `danse_benevol` / password `danse_benevol` (dev uniquement).
   - Démarrage : `docker compose up -d mariadb`.
-  - En production, MariaDB est installé directement sur le VPS avec ses propres identifiants — ceux-ci ne concernent que le développement local.
+  - En production, MariaDB tourne dans un conteneur de `compose.prod.yml` avec ses propres identifiants (`.env` du serveur) — ceux-ci ne concernent que le développement local.
+- **Déploiement conteneurisé** : image Docker PHP-FPM 8.5 (les distributions ne fournissent pas PHP ≥ 8.4, exigé par les dépendances), Caddy pour le HTTPS automatique, worker de file d'attente et MariaDB, orchestrés par `compose.prod.yml`. GitHub Actions teste, publie les images sur ghcr.io et déploie sur le VPS en SSH (`.github/workflows/deploy.yml`, `docker/deploy.sh`).
 - **phpMyAdmin (local uniquement)** : service `phpmyadmin` dans `docker-compose.yml`, accessible sur http://localhost:8081 (identifiants : `danse_benevol` / `danse_benevol`). N'est jamais déployé en production.
 - *(Cette section sera enrichie au fur et à mesure des décisions prises pendant le projet.)*
 

@@ -1,0 +1,25 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$SERVER_NAME} {
+	root * /var/www/html/public
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Photo de badge : 5 Mo maximum côté application
+	request_body {
+		max_size 8MB
+	}
+
+	php_fastcgi app:9000
+	file_server
+}

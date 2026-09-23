@@ -1,0 +1,65 @@
+# Production : à lancer sur le VPS avec le .env de production dans le même dossier.
+#   IMAGE_TAG=<commit> docker compose -f compose.prod.yml up -d
+# Le déploiement normal passe par docker/deploy.sh (appelé par la CI).
+
+name: danse-benevol-prod
+
+services:
+    web:
+        image: ${IMAGE_REPOSITORY}/web:${IMAGE_TAG:-latest}
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        environment:
+            SERVER_NAME: ${SERVER_NAME}
+            ACME_EMAIL: ${ACME_EMAIL}
+        volumes:
+            - caddy-data:/data
+            - caddy-config:/config
+        depends_on:
+            - app
+
+    app:
+        image: ${IMAGE_REPOSITORY}/app:${IMAGE_TAG:-latest}
+        restart: unless-stopped
+        env_file: .env
+        volumes:
+            - storage:/var/www/html/storage
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
+    worker:
+        image: ${IMAGE_REPOSITORY}/app:${IMAGE_TAG:-latest}
+        restart: unless-stopped
+        command: ["php", "artisan", "queue:work", "--tries=3", "--max-time=3600"]
+        env_file: .env
+        volumes:
+            - storage:/var/www/html/storage
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
+    mariadb:
+        image: mariadb:10.11
+        restart: unless-stopped
+        environment:
+            MARIADB_DATABASE: ${DB_DATABASE}
+            MARIADB_USER: ${DB_USERNAME}
+            MARIADB_PASSWORD: ${DB_PASSWORD}
+            MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        volumes:
+            - mariadb-data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+
+volumes:
+    storage:
+    mariadb-data:
+    caddy-data:
+    caddy-config:
