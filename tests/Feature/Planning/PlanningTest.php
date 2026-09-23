@@ -218,3 +218,26 @@ test('finalizing validates and locks the planning', function () {
 
     expect($volunteer->fresh()->profile_locked_at)->not->toBeNull();
 });
+
+test('a minor cannot finalize their planning until their profile is validated', function (?string $minorValidatedAt, bool $expectedValidated) {
+    $edition = Edition::factory()->create(['status' => 'active', 'min_slots_per_volunteer' => 1]);
+    $day = EventDay::factory()->for($edition)->create();
+    $timeSlot = TimeSlot::factory()->for($day, 'eventDay')->create(['position' => 1]);
+    $mission = Mission::factory()->for($edition)->create();
+    $missionSlot = MissionSlot::factory()->for($mission, 'mission')->for($timeSlot, 'timeSlot')->create(['capacity' => 3]);
+
+    $volunteer = volunteerFor($edition);
+    $volunteer->forceFill(['is_minor' => true, 'minor_validated_at' => $minorValidatedAt])->save();
+    $this->actingAs($volunteer)->post(route('planning.reserve', $missionSlot));
+
+    $response = $this->actingAs($volunteer)->post(route('planning.finalize'));
+
+    if (! $expectedValidated) {
+        $response->assertSessionHas('error');
+    }
+
+    expect((bool) $volunteer->editions()->first()->pivot->is_validated)->toBe($expectedValidated);
+})->with([
+    'awaiting validation' => [null, false],
+    'validated by an admin' => ['2026-09-01 10:00:00', true],
+]);

@@ -135,3 +135,26 @@ test('an invitation code cannot be reused for a second registration', function (
     $response->assertSessionHasErrors('code');
     expect(User::count())->toBe(1);
 });
+
+test('a volunteer who checks the under-18 box is registered as a minor awaiting validation', function () {
+    Storage::fake('local');
+
+    $code = InvitationCode::factory()->for(Edition::factory())->create();
+
+    $this->post('/inscription', validRegistrationPayload($code, ['is_minor' => '1']));
+
+    $user = User::where('email', 'camille.dupont@example.com')->firstOrFail();
+
+    expect($user->is_minor)->toBeTrue()
+        ->and($user->minor_validated_at)->toBeNull();
+});
+
+test('a volunteer who leaves the under-18 box unchecked is not registered as a minor', function () {
+    Storage::fake('local');
+
+    $code = InvitationCode::factory()->for(Edition::factory())->create();
+
+    $this->post('/inscription', validRegistrationPayload($code));
+
+    expect(User::where('email', 'camille.dupont@example.com')->firstOrFail()->is_minor)->toBeFalse();
+});

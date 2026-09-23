@@ -240,6 +240,12 @@
                                 <p>Ton planning est validé et verrouillé. Seul un administrateur peut le modifier désormais.</p>
                             </div>
                         @else
+                            @if ($isAwaitingMinorValidation)
+                                <p class="mt-2 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+                                    Ton profil mineur doit d'abord être validé par l'organisation. Tu peux déjà réserver tes créneaux, la validation définitive sera possible ensuite.
+                                </p>
+                            @endif
+
                             @if ($reservedCount < $minSlots)
                                 <p class="mt-2 rounded-xl bg-sand-100 p-3 text-sm text-stone-600">
                                     Encore <strong class="text-stone-900">{{ $minSlots - $reservedCount }} créneau(x)</strong> à réserver avant de pouvoir valider.
@@ -255,7 +261,7 @@
                                 <p><strong>Attention :</strong> une fois validé, ton planning est verrouillé. Seul un administrateur pourra le modifier.</p>
                             </div>
 
-                            <button type="button" data-open-dialog="finalize-dialog" @disabled($reservedCount < $minSlots)
+                            <button type="button" data-open-dialog="finalize-dialog" @disabled($reservedCount < $minSlots || $isAwaitingMinorValidation)
                                 class="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand-500 font-semibold text-white shadow-md transition hover:bg-brand-600 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-stone-300 disabled:shadow-none">
                                 <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
                                 Valider définitivement

@@ -53,7 +53,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [ ] ⬜ Modification d'un planning verrouillé par un admin
 - [x] ✅ Forcer l'attribution de postes sensibles
 - [ ] ⬜ Réinitialisation des identifiants par un admin
-- [ ] ⬜ Validation des profils mineurs (colonne `minor_validated_at` déjà en base)
+- [x] ✅ Validation des profils mineurs — filtre + action sur la page `Admin\VolunteerController`
 - [ ] ⬜ Génération automatique des badges (Photo, Nom, Prénom, "BÉNÉVOLE", ID unique, QR code) — `badge_uid` déjà en base
 - [ ] ⬜ Exports Excel / CSV / PDF (plannings, listes par mission, fiches contact)
 - [ ] 🚧 Log d'audit horodaté des actions admin — branché sur la création/révocation de codes d'invitation et l'attribution/retrait de postes restreints ; pas encore d'UI de consultation (cf. fonctionnalités avancées)

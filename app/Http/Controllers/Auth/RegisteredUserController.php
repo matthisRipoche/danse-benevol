@@ -50,6 +50,7 @@ class RegisteredUserController extends Controller
                 'phone' => $request->validated('phone'),
                 'password' => $request->validated('password'),
                 'photo_path' => $photoPath,
+                'is_minor' => $request->boolean('is_minor'),
                 'role' => 'volunteer',
             ]);
 

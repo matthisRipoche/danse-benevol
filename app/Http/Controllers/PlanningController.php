@@ -44,6 +44,7 @@ class PlanningController extends Controller
             'reservedMissionSlotIds' => $assignments->pluck('mission_slot_id')->all(),
             'reservedTimeSlotIds' => $assignments->pluck('time_slot_id')->all(),
             'isValidated' => (bool) $editionVolunteer->pivot->is_validated,
+            'isAwaitingMinorValidation' => $user->is_minor && ! $user->minor_validated_at,
         ]);
     }
 
@@ -145,6 +146,10 @@ class PlanningController extends Controller
 
         if ($editionVolunteer->pivot->is_validated) {
             return back()->with('error', 'Ton planning est déjà validé.');
+        }
+
+        if ($user->is_minor && ! $user->minor_validated_at) {
+            return back()->with('error', "Ton profil mineur doit d'abord être validé par l'organisation avant que tu puisses valider ton planning.");
         }
 
         $count = $this->assignmentsFor($user, $edition)->count();
