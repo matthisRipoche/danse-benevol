@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Edition;
 use App\Models\VolunteerAssignment;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -33,14 +32,11 @@ class ProfileController extends Controller
             ])
             ->values();
 
-        $totalMinutes = $assignments->sum(fn (VolunteerAssignment $assignment) => Carbon::parse($assignment->missionSlot->timeSlot->starts_at)
-            ->diffInMinutes(Carbon::parse($assignment->missionSlot->timeSlot->ends_at)));
-
         return view('profile.show', [
             'user' => $user,
             'edition' => $edition,
             'assignments' => $assignments,
-            'totalMinutes' => (int) $totalMinutes,
+            'totalMinutes' => $assignments->sum(fn (VolunteerAssignment $assignment) => $assignment->missionSlot->timeSlot->durationInMinutes()),
             'isValidated' => (bool) $editionVolunteer->pivot->is_validated,
             'badgeUid' => $editionVolunteer->pivot->badge_uid,
         ]);
