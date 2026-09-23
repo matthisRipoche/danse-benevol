@@ -41,6 +41,7 @@ class MissionFactory extends Factory
             'name' => fake()->randomElement(self::PUBLIC_MISSIONS),
             'description' => fake()->sentence(),
             'is_public' => true,
+            'default_capacity' => 5,
         ];
     }
 

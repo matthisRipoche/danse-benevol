@@ -19,6 +19,7 @@
             <a href="{{ route('admin.dashboard') }}" @class(['shrink-0 rounded-full px-3.5 py-1.5', $navLink(request()->routeIs('admin.dashboard'))])>Tableau de bord</a>
             <a href="{{ route('admin.volunteers.index') }}" @class(['shrink-0 rounded-full px-3.5 py-1.5', $navLink(request()->routeIs('admin.volunteers.*'))])>Bénévoles</a>
             <a href="{{ route('admin.invitation-codes.index') }}" @class(['shrink-0 rounded-full px-3.5 py-1.5', $navLink(request()->routeIs('admin.invitation-codes.*'))])>Codes d'invitation</a>
+            <a href="{{ route('admin.missions.index') }}" @class(['shrink-0 rounded-full px-3.5 py-1.5', $navLink(request()->routeIs('admin.missions.*', 'admin.schedule.*'))])>Missions</a>
             <a href="{{ route('admin.restricted-missions.index') }}" @class(['shrink-0 rounded-full px-3.5 py-1.5', $navLink(request()->routeIs('admin.restricted-missions.*'))])>Postes restreints</a>
             <a href="{{ route('admin.exports.index') }}" @class(['shrink-0 rounded-full px-3.5 py-1.5', $navLink(request()->routeIs('admin.exports.*'))])>Exports</a>
         </nav>
