@@ -23,6 +23,12 @@
                     </div>
                 </div>
 
+                @if (session('status'))
+                    <div class="mb-6 rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-800">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="mb-6 rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-700">
                         <ul class="list-inside list-disc">
@@ -46,7 +52,10 @@
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label for="password" class="text-sm font-medium text-stone-600">Mot de passe</label>
+                        <div class="flex items-baseline justify-between gap-2">
+                            <label for="password" class="text-sm font-medium text-stone-600">Mot de passe</label>
+                            <a href="{{ route('password.request') }}" class="text-sm font-semibold text-brand-500 hover:underline">Mot de passe oublié ?</a>
+                        </div>
                         <div class="relative flex items-center">
                             <svg class="pointer-events-none absolute left-3 size-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
                             <input type="password" name="password" id="password" required autocomplete="current-password"

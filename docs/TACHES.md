@@ -27,7 +27,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [x] ✅ Upload de la photo (dépend de la décision de stockage ci-dessus)
 - [x] ✅ Contrôle applicatif d'unicité du compte (l'e-mail est déjà `UNIQUE` en base)
 - [x] ✅ Verrouillage des infos perso après validation, modifiable par un admin seulement (`/mon-profil/modifier` tant que `profile_locked_at` est vide ; `/admin/benevoles/{id}/modifier` à tout moment, tracé dans le journal d'audit)
-- [ ] ⬜ Réinitialisation / modification du mot de passe
+- [ ] 🚧 Réinitialisation / modification du mot de passe (réinitialisation par e-mail faite : lien « Mot de passe oublié ? » sur la connexion, lien valable 60 min et à usage unique ; reste la modification depuis l'espace connecté)
 - [ ] ⬜ Onboarding / dashboard bénévole (règles, dates, quotas, contacts, engagement)
 - [ ] ⬜ Fenêtre d'inscription : planning en lecture seule hors période + verrouillage manuel admin (colonnes `registration_opens_at`/`registration_closes_at`/`is_registration_locked` déjà en base)
 
