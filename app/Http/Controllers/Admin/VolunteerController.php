@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateVolunteerRequest;
 use App\Models\AuditLog;
 use App\Models\Edition;
 use App\Models\EditionVolunteer;
@@ -109,6 +110,43 @@ class VolunteerController extends Controller
             'validatedAt' => $editionVolunteer->pivot->validated_at ? Carbon::parse($editionVolunteer->pivot->validated_at) : null,
             'badgeUid' => $editionVolunteer->pivot->badge_uid,
         ]);
+    }
+
+    /**
+     * Display the form to edit a volunteer's personal information, even once their profile is locked.
+     */
+    public function edit(User $user): View
+    {
+        abort_unless($user->editions()->where('editions.id', Edition::active()->id)->exists(), 404);
+
+        return view('admin.volunteers.edit', ['volunteer' => $user]);
+    }
+
+    /**
+     * Update a volunteer's personal information and, optionally, their badge photo.
+     */
+    public function update(UpdateVolunteerRequest $request, User $user): RedirectResponse
+    {
+        abort_unless($user->editions()->where('editions.id', Edition::active()->id)->exists(), 404);
+
+        $isMinor = $request->boolean('is_minor');
+
+        // A volunteer who is no longer declared minor must not keep a stale minor validation.
+        if (! $isMinor) {
+            $user->minor_validated_at = null;
+        }
+
+        $changedFields = $user->updatePersonalInformation(
+            [...$request->safe()->except(['photo', 'is_minor']), 'is_minor' => $isMinor],
+            $request->file('photo'),
+        );
+
+        if ($changedFields !== []) {
+            AuditLog::record($request->user(), 'user.profile_updated', $user, ['fields' => $changedFields]);
+        }
+
+        return redirect()->route('admin.volunteers.show', $user)
+            ->with('status', "Informations de {$user->first_name} {$user->last_name} mises à jour.");
     }
 
     /**

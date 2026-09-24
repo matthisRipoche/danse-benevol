@@ -52,6 +52,8 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('/benevoles', [VolunteerController::class, 'index'])->name('volunteers.index');
     Route::get('/benevoles/{user}', [VolunteerController::class, 'show'])->name('volunteers.show');
+    Route::get('/benevoles/{user}/modifier', [VolunteerController::class, 'edit'])->name('volunteers.edit');
+    Route::put('/benevoles/{user}', [VolunteerController::class, 'update'])->name('volunteers.update');
     Route::get('/benevoles/{user}/photo', [VolunteerController::class, 'photo'])->name('volunteers.photo');
     Route::get('/badges/{badgeUid}', [VolunteerController::class, 'badge'])->name('volunteers.badge');
     Route::post('/benevoles/{user}/valider-mineur', [VolunteerController::class, 'validateMinor'])->name('volunteers.validate-minor');
@@ -93,5 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/mon-planning/valider', [PlanningController::class, 'finalize'])->name('planning.finalize');
 
     Route::get('/mon-profil', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/mon-profil/modifier', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/mon-profil', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/mon-profil/photo', [ProfileController::class, 'photo'])->name('profile.photo');
 });
