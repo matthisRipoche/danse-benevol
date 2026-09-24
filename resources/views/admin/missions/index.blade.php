@@ -68,6 +68,9 @@
                                         @unless ($mission->is_public)
                                             <span class="ml-1 rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-500">Restreinte</span>
                                         @endunless
+                                        @if ($mission->is_adult_only)
+                                            <span class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Interdite aux mineurs</span>
+                                        @endif
                                     </p>
                                     @if ($mission->description)
                                         <p class="line-clamp-2 text-stone-500">{{ $mission->description }}</p>

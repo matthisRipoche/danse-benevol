@@ -52,11 +52,11 @@
                     <div class="mb-4 overflow-x-auto rounded-lg border border-sand-200">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-sand-100/60 text-stone-500">
-                                <tr><th class="px-2 py-1.5">Mission</th><th class="px-2 py-1.5">Description</th><th class="px-2 py-1.5">Publique</th><th class="px-2 py-1.5">Capacité</th></tr>
+                                <tr><th class="px-2 py-1.5">Mission</th><th class="px-2 py-1.5">Description</th><th class="px-2 py-1.5">Publique</th><th class="px-2 py-1.5">Capacité</th><th class="px-2 py-1.5">Interdite aux mineurs</th></tr>
                             </thead>
                             <tbody class="divide-y divide-sand-100">
-                                <tr><td class="px-2 py-1.5">Vestiaires</td><td class="px-2 py-1.5">Niveau -1</td><td class="px-2 py-1.5">Oui</td><td class="px-2 py-1.5">4</td></tr>
-                                <tr><td class="px-2 py-1.5">Billetterie</td><td class="px-2 py-1.5"></td><td class="px-2 py-1.5">Non</td><td class="px-2 py-1.5">2</td></tr>
+                                <tr><td class="px-2 py-1.5">Vestiaires</td><td class="px-2 py-1.5">Niveau -1</td><td class="px-2 py-1.5">Oui</td><td class="px-2 py-1.5">4</td><td class="px-2 py-1.5"></td></tr>
+                                <tr><td class="px-2 py-1.5">Billetterie</td><td class="px-2 py-1.5"></td><td class="px-2 py-1.5">Non</td><td class="px-2 py-1.5">2</td><td class="px-2 py-1.5">Oui</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -64,6 +64,7 @@
                         <li>Fichier <strong>.xlsx</strong> ou <strong>.csv</strong> (séparateur « ; » ou « , »), 2 Mo et {{ $maxRows }} lignes maximum.</li>
                         <li>Colonnes dans cet ordre ; la ligne d'en-tête est facultative.</li>
                         <li><strong>Publique</strong> : Oui ou Non (vide = Oui). Non = poste restreint, attribué par un admin.</li>
+                        <li><strong>Interdite aux mineurs</strong> (facultative) : Oui ou Non (vide = Non).</li>
                         <li><strong>Capacité</strong> : places par créneau, de 0 à 500, ajustables ensuite mission par mission.</li>
                         <li>Les missions dont le nom existe déjà sont ignorées.</li>
                     </ul>

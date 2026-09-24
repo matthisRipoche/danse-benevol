@@ -40,7 +40,12 @@
                                             @endphp
                                             <div class="rounded-lg bg-sand-50 p-3">
                                                 <div class="mb-2 flex items-center justify-between gap-2">
-                                                    <p class="font-semibold">{{ $missionSlot->mission->name }}</p>
+                                                    <p class="font-semibold">
+                                                        {{ $missionSlot->mission->name }}
+                                                        @if ($missionSlot->mission->is_adult_only)
+                                                            <span class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Interdite aux mineurs</span>
+                                                        @endif
+                                                    </p>
                                                     <span @class([
                                                         'rounded-full px-2 py-0.5 text-xs font-semibold',
                                                         'bg-emerald-100 text-emerald-800' => $assignedCount >= $missionSlot->capacity,

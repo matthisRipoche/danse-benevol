@@ -57,6 +57,10 @@ class RestrictedMissionController extends Controller
 
             $volunteer = User::where('email', $request->validated('email'))->firstOrFail();
 
+            if ($missionSlot->mission->is_adult_only && $volunteer->is_minor) {
+                return back()->with('error', 'Ce poste est interdit aux mineurs.');
+            }
+
             if (VolunteerAssignment::where('user_id', $volunteer->id)->where('time_slot_id', $missionSlot->time_slot_id)->exists()) {
                 return back()->with('error', 'Ce bénévole a déjà une mission sur ce créneau horaire.');
             }

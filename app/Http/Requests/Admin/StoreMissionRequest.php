@@ -28,6 +28,7 @@ class StoreMissionRequest extends FormRequest
             'name' => ['required', 'string', 'max:255', Rule::unique('missions', 'name')->where('edition_id', Edition::active()->id)],
             'description' => ['nullable', 'string', 'max:2000'],
             'is_public' => ['required', 'boolean'],
+            'is_adult_only' => ['sometimes', 'boolean'],
             'default_capacity' => ['required', 'integer', 'min:0', 'max:500'],
         ];
     }
