@@ -62,6 +62,11 @@ class InvitationCode extends Model
     }
 
     /**
+     * Number of days an invitation code stays usable after being issued.
+     */
+    public const int VALIDITY_DAYS = 7;
+
+    /**
      * Generate a random code that isn't already in use.
      */
     public static function generateUniqueCode(): string

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Edition;
+use App\Models\EditionVolunteer;
 use App\Models\EventDay;
 use App\Models\MissionSlot;
 use App\Models\User;
@@ -68,7 +69,14 @@ class PlanningController extends Controller
         }
 
         return DB::transaction(function () use ($user, $edition, $missionSlot) {
+            // Both rows are locked so that simultaneous requests are checked one after the other:
+            // the volunteer's registration guards their slot quota, the mission slot its capacity.
+            $lockedEditionVolunteer = $this->lockedEditionVolunteer($user, $edition);
             $lockedMissionSlot = MissionSlot::whereKey($missionSlot->id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedEditionVolunteer->is_validated) {
+                return back()->with('error', 'Ton planning est validé, il ne peut plus être modifié.');
+            }
 
             $assignments = $this->assignmentsFor($user, $edition);
 
@@ -152,13 +160,17 @@ class PlanningController extends Controller
             return back()->with('error', "Ton profil mineur doit d'abord être validé par l'organisation avant que tu puisses valider ton planning.");
         }
 
-        $count = $this->assignmentsFor($user, $edition)->count();
+        return DB::transaction(function () use ($user, $edition) {
+            $lockedEditionVolunteer = $this->lockedEditionVolunteer($user, $edition);
 
-        if ($count < $edition->min_slots_per_volunteer) {
-            return back()->with('error', "Réserve au moins {$edition->min_slots_per_volunteer} créneau(x) avant de valider définitivement.");
-        }
+            if ($lockedEditionVolunteer->is_validated) {
+                return back()->with('error', 'Ton planning est déjà validé.');
+            }
 
-        DB::transaction(function () use ($user, $edition) {
+            if ($this->assignmentsFor($user, $edition)->count() < $edition->min_slots_per_volunteer) {
+                return back()->with('error', "Réserve au moins {$edition->min_slots_per_volunteer} créneau(x) avant de valider définitivement.");
+            }
+
             VolunteerAssignment::where('user_id', $user->id)
                 ->whereHas('missionSlot.timeSlot.eventDay', fn ($q) => $q->where('edition_id', $edition->id))
                 ->update(['status' => 'validated']);
@@ -170,9 +182,9 @@ class PlanningController extends Controller
             ]);
 
             $user->forceFill(['profile_locked_at' => now()])->save();
-        });
 
-        return redirect()->route('planning.index')->with('status', 'Planning validé et verrouillé.');
+            return redirect()->route('planning.index')->with('status', 'Planning validé et verrouillé.');
+        });
     }
 
     /**
@@ -185,6 +197,17 @@ class PlanningController extends Controller
         abort_if(! $editionVolunteer, 403, "Tu n'es pas inscrit à cette édition.");
 
         return $editionVolunteer;
+    }
+
+    /**
+     * Lock the volunteer's registration row for the edition until the end of the current transaction.
+     */
+    private function lockedEditionVolunteer(User $user, Edition $edition): EditionVolunteer
+    {
+        return EditionVolunteer::where('user_id', $user->id)
+            ->where('edition_id', $edition->id)
+            ->lockForUpdate()
+            ->firstOrFail();
     }
 
     /**

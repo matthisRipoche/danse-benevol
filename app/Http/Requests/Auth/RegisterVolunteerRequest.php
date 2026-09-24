@@ -32,7 +32,7 @@ class RegisterVolunteerRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'photo' => ['required', 'image', 'max:5120'],
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:6144'],
             'is_minor' => ['nullable', 'boolean'],
         ];
     }

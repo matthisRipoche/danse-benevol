@@ -28,7 +28,7 @@ class UpdateVolunteerRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->route('user'))],
             'phone' => ['required', 'string', 'max:20'],
-            'photo' => ['nullable', 'image', 'max:5120'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:6144'],
             'is_minor' => ['nullable', 'boolean'],
         ];
     }

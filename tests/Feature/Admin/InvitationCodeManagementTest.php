@@ -130,3 +130,21 @@ test('a guest is redirected to the login page', function () {
 
     $response->assertRedirect(route('login'));
 });
+
+test('a new invitation code is valid for 7 days and the email says until when', function () {
+    Mail::fake();
+    $this->freezeTime();
+
+    $admin = User::factory()->admin()->create();
+    Edition::factory()->create(['status' => 'active']);
+
+    $this->actingAs($admin)->post(route('admin.invitation-codes.store'), ['email' => 'candidat@example.com']);
+
+    $code = InvitationCode::where('email', 'candidat@example.com')->firstOrFail();
+    expect($code->expires_at->toDateTimeString())->toBe(now()->addDays(7)->toDateTimeString());
+
+    Mail::assertQueued(InvitationCodeMail::class, fn (InvitationCodeMail $mail) => str_contains(
+        $mail->render(),
+        "valable jusqu'au ".now()->addDays(7)->format('d/m/Y à H:i'),
+    ));
+});

@@ -112,3 +112,19 @@ test('the dev admin login route fails gracefully when no admin exists', function
     $response->assertNotFound();
     $this->assertGuest();
 });
+
+test('rapid login attempts are temporarily blocked', function () {
+    $user = User::factory()->create();
+
+    foreach (range(1, 6) as $attempt) {
+        $this->post('/connexion', ['email' => $user->email, 'password' => 'wrong-password'])
+            ->assertSessionHasErrors('email');
+    }
+
+    foreach (range(7, 10) as $attempt) {
+        $this->post('/connexion', ['email' => $user->email, 'password' => 'password'])
+            ->assertTooManyRequests();
+    }
+
+    $this->assertGuest();
+});

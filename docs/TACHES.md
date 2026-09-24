@@ -24,7 +24,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [x] ✅ Génération/gestion des codes d'invitation côté admin (création unitaire par e-mail + liste + révocation ; génération en masse non couverte)
 - [x] ✅ Inscription strictement conditionnée par un code d'invitation valide
 - [x] ✅ Formulaire d'inscription (nom, prénom, e-mail, téléphone, mot de passe, photo)
-- [x] ✅ Upload de la photo (dépend de la décision de stockage ci-dessus)
+- [x] ✅ Upload de la photo (dépend de la décision de stockage ci-dessus) — JPG ou PNG, 6 Mo maximum
 - [x] ✅ Contrôle applicatif d'unicité du compte (l'e-mail est déjà `UNIQUE` en base)
 - [x] ✅ Verrouillage des infos perso après validation, modifiable par un admin seulement (`/mon-profil/modifier` tant que `profile_locked_at` est vide ; `/admin/benevoles/{id}/modifier` à tout moment, tracé dans le journal d'audit)
 - [ ] 🚧 Réinitialisation / modification du mot de passe (réinitialisation par e-mail faite : lien « Mot de passe oublié ? » sur la connexion, lien valable 60 min et à usage unique ; reste la modification depuis l'espace connecté)
@@ -59,7 +59,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [x] ✅ Exports Excel / CSV (planning général, listes par mission, fiches contact) — `Admin\ExportController`, OpenSpout, téléchargements tracés dans `audit_logs`
 - [ ] ⬜ Exports PDF (plannings, listes par mission, fiches contact)
 - [x] ✅ Import Excel / CSV de candidats : création et envoi d'un code d'invitation par e-mail valide, rapport des lignes ignorées — `Admin\InvitationCodeController`
-- [ ] 🚧 Log d'audit horodaté des actions admin — branché sur la création/révocation de codes d'invitation et l'attribution/retrait de postes restreints ; pas encore d'UI de consultation (cf. fonctionnalités avancées)
+- [ ] 🚧 Log d'audit horodaté des actions admin — branché sur les codes d'invitation, missions, jours et créneaux, postes restreints, profils, mineurs et exports ; entrées non modifiables ni supprimables, conservées 12 mois (`model:prune` quotidien via le service `scheduler`) ; pas encore d'UI de consultation (cf. fonctionnalités avancées)
 - [ ] ⬜ Gestion multi-éditions : création, archivage, consultation des éditions passées (le modèle `Edition` est déjà pensé multi-éditions, UI à faire)
 
 ## Fonctionnalités avancées (post-MVP)
