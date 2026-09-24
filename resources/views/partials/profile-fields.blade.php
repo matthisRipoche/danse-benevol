@@ -49,11 +49,11 @@
     </div>
     <div class="flex min-w-0 flex-col gap-1">
         <p class="font-semibold">Photo du badge</p>
-        <p class="text-sm text-stone-600">De face, tête nue, nette. Laisse vide pour garder la photo actuelle.</p>
+        <p class="text-sm text-stone-600">De face, tête nue, nette. JPG ou PNG, 6 Mo maximum. Laisse vide pour garder la photo actuelle.</p>
         <label for="photo" class="mt-1 inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold shadow-sm hover:bg-sand-50 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-brand-500/30 @error('photo') ring-2 ring-red-400 @enderror">
             <svg class="size-4 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z"/><circle cx="12" cy="13" r="3"/></svg>
             <span id="photo-label">Changer la photo</span>
-            <input type="file" name="photo" id="photo" accept="image/*" class="sr-only">
+            <input type="file" name="photo" id="photo" accept="image/jpeg,image/png" class="sr-only">
         </label>
     </div>
 </div>

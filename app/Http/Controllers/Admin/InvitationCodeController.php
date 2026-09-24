@@ -150,7 +150,7 @@ class InvitationCodeController extends Controller
             'code' => InvitationCode::generateUniqueCode(),
             'email' => $email,
             'status' => 'pending',
-            'expires_at' => now()->addMonths(2),
+            'expires_at' => now()->addDays(InvitationCode::VALIDITY_DAYS),
             'created_by_id' => $admin->id,
         ]);
 

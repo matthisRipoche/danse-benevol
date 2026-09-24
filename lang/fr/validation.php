@@ -175,6 +175,11 @@ return [
         'email' => [
             'unique' => 'Un compte existe déjà avec cette adresse e-mail.',
         ],
+        'photo' => [
+            'image' => 'La photo doit être une image au format JPG ou PNG.',
+            'mimes' => 'La photo doit être au format JPG ou PNG.',
+            'max' => 'La photo ne doit pas dépasser 6 Mo.',
+        ],
     ],
 
     /*

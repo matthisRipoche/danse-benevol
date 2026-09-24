@@ -11,7 +11,7 @@ Ta candidature a été retenue. Pour créer ton compte bénévole, utilise le co
 Créer mon compte
 </x-mail::button>
 
-Ce code est personnel et à usage unique.
+Ce code est personnel, à usage unique et valable jusqu'au {{ $expiresAt->format('d/m/Y à H:i') }}.
 
 Merci,<br>
 {{ config('app.name') }}

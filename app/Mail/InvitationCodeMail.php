@@ -42,6 +42,7 @@ class InvitationCodeMail extends Mailable implements ShouldQueue
             with: [
                 'code' => $this->invitationCode->code,
                 'registerUrl' => route('register', ['code' => $this->invitationCode->code]),
+                'expiresAt' => $this->invitationCode->expires_at,
             ],
         );
     }

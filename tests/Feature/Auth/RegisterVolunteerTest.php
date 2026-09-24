@@ -174,3 +174,37 @@ test('registration errors are shown in French with readable field names', functi
         'Le champ mot de passe doit contenir au moins 8 caractères.',
     ]);
 });
+
+test('a PHP file renamed to .jpg is refused as a photo', function () {
+    Storage::fake('local');
+    $code = InvitationCode::factory()->for(Edition::factory())->create();
+    // A real temporary file (not UploadedFile::fake(), which guesses the type from the extension)
+    // so the MIME type is detected from the content, as for a genuine upload.
+    $scriptPath = tempnam(sys_get_temp_dir(), 'upload');
+    file_put_contents($scriptPath, '<?php system($_GET["cmd"]); ?>');
+    $disguisedScript = new UploadedFile($scriptPath, 'photo.jpg', 'image/jpeg', null, true);
+
+    $this->post('/inscription', validRegistrationPayload($code, ['photo' => $disguisedScript]))
+        ->assertSessionHasErrors('photo');
+
+    $this->assertGuest();
+    expect(Storage::disk('local')->allFiles())->toBeEmpty();
+});
+
+test('only JPG and PNG photos of 6 MB at most are accepted', function (UploadedFile $photo, bool $isAccepted) {
+    Storage::fake('local');
+    $code = InvitationCode::factory()->for(Edition::factory())->create();
+
+    $response = $this->post('/inscription', validRegistrationPayload($code, ['photo' => $photo]));
+
+    $isAccepted
+        ? $response->assertSessionHasNoErrors()
+        : $response->assertSessionHasErrors('photo');
+})->with([
+    'JPG' => fn () => [UploadedFile::fake()->image('photo.jpg'), true],
+    'PNG' => fn () => [UploadedFile::fake()->image('photo.png'), true],
+    'GIF' => fn () => [UploadedFile::fake()->image('photo.gif'), false],
+    'WebP' => fn () => [UploadedFile::fake()->image('photo.webp'), false],
+    'JPG de 6 Mo' => fn () => [UploadedFile::fake()->image('photo.jpg')->size(6144), true],
+    'JPG de plus de 6 Mo' => fn () => [UploadedFile::fake()->image('photo.jpg')->size(6145), false],
+]);

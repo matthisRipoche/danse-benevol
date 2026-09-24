@@ -42,6 +42,17 @@ services:
             mariadb:
                 condition: service_healthy
 
+    scheduler:
+        image: ${IMAGE_REPOSITORY}/app:${IMAGE_TAG:-latest}
+        restart: unless-stopped
+        command: ["php", "artisan", "schedule:work"]
+        env_file: .env
+        volumes:
+            - storage:/var/www/html/storage
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
     mariadb:
         image: mariadb:10.11
         restart: unless-stopped
