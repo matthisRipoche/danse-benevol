@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable(['first_name', 'last_name', 'email', 'phone', 'password', 'photo_path', 'role', 'is_minor'])]
 #[Hidden(['password', 'remember_token'])]
@@ -95,5 +97,33 @@ class User extends Authenticatable
     public function homeRouteName(): string
     {
         return $this->role === 'admin' ? 'admin.dashboard' : 'planning.index';
+    }
+
+    /**
+     * Update the personal information and, when a new photo is given, replace the badge photo
+     * on the private disk (the previous file is deleted once the new path is saved).
+     *
+     * @param  array<string, mixed>  $attributes
+     * @return list<string> The names of the columns that actually changed.
+     */
+    public function updatePersonalInformation(array $attributes, ?UploadedFile $photo = null): array
+    {
+        $previousPhotoPath = $this->photo_path;
+
+        $this->fill($attributes);
+
+        if ($photo) {
+            $this->photo_path = $photo->store('photos', 'local');
+        }
+
+        $changedFields = array_keys($this->getDirty());
+
+        $this->save();
+
+        if ($photo && $previousPhotoPath) {
+            Storage::disk('local')->delete($previousPhotoPath);
+        }
+
+        return $changedFields;
     }
 }

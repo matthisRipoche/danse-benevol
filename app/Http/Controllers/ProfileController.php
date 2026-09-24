@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Edition;
 use App\Models\VolunteerAssignment;
 use App\Support\QrCodeSvg;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -44,6 +46,24 @@ class ProfileController extends Controller
             'badgeUid' => $badgeUid,
             'badgeQrCode' => $badgeUid ? $qrCodeSvg->render(route('admin.volunteers.badge', $badgeUid)) : null,
         ]);
+    }
+
+    /**
+     * Display the form to edit the volunteer's personal information.
+     */
+    public function edit(Request $request): View
+    {
+        return view('profile.edit', ['user' => $request->user()]);
+    }
+
+    /**
+     * Update the volunteer's personal information and, optionally, their badge photo.
+     */
+    public function update(UpdateProfileRequest $request): RedirectResponse
+    {
+        $request->user()->updatePersonalInformation($request->safe()->except('photo'), $request->file('photo'));
+
+        return redirect()->route('profile.show')->with('status', 'Tes informations ont été mises à jour.');
     }
 
     /**

@@ -86,6 +86,12 @@
                             </div>
                         @endif
                     </dl>
+
+                    <a href="{{ route('admin.volunteers.edit', $volunteer) }}"
+                        class="mt-5 flex h-10 items-center justify-center gap-1.5 rounded-full border border-sand-200 bg-white text-sm font-semibold text-brand-500 shadow-sm hover:bg-sand-50">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                        Modifier les informations
+                    </a>
                 </section>
 
                 <section class="rounded-xl border border-sand-200 bg-white p-5 lg:col-span-2">
