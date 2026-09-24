@@ -46,6 +46,7 @@ class PlanningController extends Controller
             'reservedTimeSlotIds' => $assignments->pluck('time_slot_id')->all(),
             'isValidated' => (bool) $editionVolunteer->pivot->is_validated,
             'isAwaitingMinorValidation' => $user->is_minor && ! $user->minor_validated_at,
+            'isMinor' => $user->is_minor,
         ]);
     }
 
@@ -66,6 +67,10 @@ class PlanningController extends Controller
 
         if ($missionSlot->timeSlot->eventDay->edition_id !== $edition->id || ! $missionSlot->mission->is_public) {
             abort(404);
+        }
+
+        if ($missionSlot->mission->is_adult_only && $user->is_minor) {
+            return back()->with('error', 'Cette mission est interdite aux mineurs.');
         }
 
         return DB::transaction(function () use ($user, $edition, $missionSlot) {

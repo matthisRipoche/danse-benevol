@@ -40,6 +40,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
   - [x] ✅ Min 1 / max 3 créneaux par bénévole
   - [x] ✅ Pas plus de `max_consecutive_slots` créneaux consécutifs
   - [x] ✅ Jauge de capacité non dépassée (`MissionSlot::remainingCapacity()` branché à `PlanningController::reserve()`)
+  - [x] ✅ Missions interdites aux mineurs (`missions.is_adult_only`) : réservation refusée pour un bénévole mineur, attribution de poste restreint refusée, option dans le formulaire et l'import des missions
 - [x] ✅ Confidentialité : n'afficher que le nombre de places restantes, jamais l'identité des autres inscrits
 - [x] ✅ Postes sous restriction (Billetterie, Caisse) hors planning public, attribution manuelle admin uniquement — `Admin\RestrictedMissionController`
 - [x] ✅ Mode brouillon modifiable + validation définitive avec pop-up de confirmation + verrouillage

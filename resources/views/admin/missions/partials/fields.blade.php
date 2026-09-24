@@ -1,6 +1,7 @@
 @php
     $field = 'h-11 w-full rounded-lg border border-sand-200 bg-white px-3 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/15 focus:outline-none';
     $isPublic = (bool) old('is_public', $mission?->is_public ?? true);
+    $isAdultOnly = (bool) old('is_adult_only', $mission?->is_adult_only ?? false);
 @endphp
 
 <div class="flex flex-col gap-1">
@@ -26,6 +27,12 @@
         <span><span class="font-semibold">Restreinte</span><span class="block text-sm text-stone-500">Invisible des bénévoles : un admin l'attribue depuis « Postes restreints ».</span></span>
     </label>
 </fieldset>
+
+<label class="flex cursor-pointer items-start gap-2.5 rounded-lg border border-sand-200 p-3 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+    <input type="hidden" name="is_adult_only" value="0">
+    <input type="checkbox" name="is_adult_only" value="1" @checked($isAdultOnly) class="mt-1 size-4 shrink-0 accent-brand-500">
+    <span><span class="font-semibold">Interdite aux mineurs</span><span class="block text-sm text-stone-500">Les bénévoles mineurs ne peuvent ni la réserver ni y être assignés.</span></span>
+</label>
 
 <div class="flex flex-col gap-1">
     <label for="default_capacity" class="text-sm font-medium text-stone-600">Places par créneau (par défaut)</label>

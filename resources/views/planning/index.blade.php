@@ -135,12 +135,13 @@
                                                 $isMine = in_array($missionSlot->id, $reservedMissionSlotIds);
                                                 $gauge = $missionSlot->gaugeStatus();
                                                 $remaining = $missionSlot->remainingCapacity();
+                                                $isForbiddenToMe = $isMinor && $missionSlot->mission->is_adult_only;
                                             @endphp
                                             <div @class([
                                                 'flex flex-col justify-between gap-3 rounded-xl p-4 transition',
                                                 'bg-brand-50 ring-2 ring-brand-500' => $isMine,
-                                                'bg-sand-50 opacity-60' => ! $isMine && ($gauge === 'complet' || $takenHere),
-                                                'bg-sand-50 hover:bg-sand-100' => ! $isMine && $gauge !== 'complet' && ! $takenHere,
+                                                'bg-sand-50 opacity-60' => ! $isMine && ($gauge === 'complet' || $takenHere || $isForbiddenToMe),
+                                                'bg-sand-50 hover:bg-sand-100' => ! $isMine && $gauge !== 'complet' && ! $takenHere && ! $isForbiddenToMe,
                                             ])>
                                                 <div class="flex items-start justify-between gap-2">
                                                     <div class="min-w-0">
@@ -151,6 +152,9 @@
                                                             </p>
                                                         @endif
                                                         <p @class(['font-semibold', 'text-brand-600' => $isMine])>{{ $missionSlot->mission->name }}</p>
+                                                        @if ($isForbiddenToMe)
+                                                            <p class="mt-1 text-xs font-semibold text-amber-800">Interdite aux mineurs</p>
+                                                        @endif
                                                         @if ($missionSlot->mission->description)
                                                             <p class="mt-0.5 text-sm text-stone-500">{{ $missionSlot->mission->description }}</p>
                                                         @endif
@@ -176,6 +180,8 @@
                                                                     Annuler
                                                                 </button>
                                                             </form>
+                                                        @elseif ($isForbiddenToMe)
+                                                            <span class="py-1.5 text-sm text-stone-500 italic">Réservée aux majeurs</span>
                                                         @elseif ($takenHere)
                                                             <span class="py-1.5 text-sm text-stone-500 italic">Créneau pris</span>
                                                         @elseif ($gauge === 'complet')

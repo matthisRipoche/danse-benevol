@@ -33,6 +33,7 @@ class UpdateMissionRequest extends FormRequest
             ],
             'description' => ['nullable', 'string', 'max:2000'],
             'is_public' => ['required', 'boolean'],
+            'is_adult_only' => ['sometimes', 'boolean'],
             'default_capacity' => ['required', 'integer', 'min:0', 'max:500'],
             'capacities' => ['array'],
             'capacities.*' => ['required', 'integer', 'min:0', 'max:500'],

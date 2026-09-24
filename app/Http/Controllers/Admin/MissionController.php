@@ -13,6 +13,7 @@ use App\Models\Mission;
 use App\Models\MissionSlot;
 use App\Models\TimeSlot;
 use App\Models\User;
+use App\Models\VolunteerAssignment;
 use App\Support\SpreadsheetReader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -108,7 +109,7 @@ class MissionController extends Controller
         }
 
         DB::transaction(function () use ($request, $mission, $capacities, $missionSlots) {
-            $mission->update($request->safe()->only(['name', 'description', 'is_public', 'default_capacity']));
+            $mission->update($request->safe()->only(['name', 'description', 'is_public', 'is_adult_only', 'default_capacity']));
 
             foreach ($capacities as $timeSlotId => $capacity) {
                 $missionSlot = $missionSlots->get($timeSlotId);
@@ -125,7 +126,14 @@ class MissionController extends Controller
 
         AuditLog::record($request->user(), 'mission.updated', $mission, ['name' => $mission->name]);
 
-        return redirect()->route('admin.missions.index')->with('status', "Mission « {$mission->name} » mise à jour.");
+        $status = "Mission « {$mission->name} » mise à jour.";
+        $bookedMinorCount = $mission->is_adult_only ? $this->bookedMinorCount($mission) : 0;
+
+        if ($bookedMinorCount > 0) {
+            $status .= " Attention : {$bookedMinorCount} bénévole(s) mineur(s) déjà inscrit(s) sur cette mission, à réaffecter depuis leur fiche.";
+        }
+
+        return redirect()->route('admin.missions.index')->with('status', $status);
     }
 
     /**
@@ -175,19 +183,21 @@ class MissionController extends Controller
         $skipped = [];
 
         foreach ($rows as $line => $cells) {
-            [$name, $description, $publicCell, $capacityCell] = array_pad($cells, 4, '');
+            [$name, $description, $publicCell, $capacityCell, $adultOnlyCell] = array_pad($cells, 5, '');
 
             if ($line === array_key_first($rows) && ! ctype_digit($capacityCell)) {
                 continue;
             }
 
             $isPublic = $this->parsePublic($publicCell);
+            $isAdultOnly = $this->parseAdultOnly($adultOnlyCell);
 
             $reason = match (true) {
                 $name === '' => 'Nom de mission manquant',
                 mb_strlen($name) > 255 => 'Nom de mission trop long (255 caractères maximum)',
                 in_array(mb_strtolower($name), $existingNames, true) => 'Une mission porte déjà ce nom',
                 $isPublic === null => "Colonne « Publique » invalide (« {$publicCell} ») : Oui ou Non attendu",
+                $isAdultOnly === null => "Colonne « Interdite aux mineurs » invalide (« {$adultOnlyCell} ») : Oui ou Non attendu",
                 ! ctype_digit($capacityCell) || (int) $capacityCell > 500 => 'Capacité manquante ou invalide (nombre de 0 à 500)',
                 default => null,
             };
@@ -203,6 +213,7 @@ class MissionController extends Controller
                 'name' => $name,
                 'description' => $description !== '' ? mb_substr($description, 0, 2000) : null,
                 'is_public' => $isPublic,
+                'is_adult_only' => $isAdultOnly,
                 'default_capacity' => (int) $capacityCell,
             ], $request->user(), $edition)->name;
         }
@@ -240,6 +251,29 @@ class MissionController extends Controller
         AuditLog::record($admin, 'mission.created', $mission, ['name' => $mission->name]);
 
         return $mission;
+    }
+
+    /**
+     * Number of minor volunteers already booked on any slot of the mission.
+     */
+    private function bookedMinorCount(Mission $mission): int
+    {
+        return VolunteerAssignment::whereIn('mission_slot_id', $mission->missionSlots()->select('id'))
+            ->whereHas('user', fn ($query) => $query->where('is_minor', true))
+            ->distinct('user_id')
+            ->count('user_id');
+    }
+
+    /**
+     * « Oui » / « Non » (and common variants) to a boolean; an empty cell means open to minors.
+     */
+    private function parseAdultOnly(string $value): ?bool
+    {
+        return match (mb_strtolower(trim($value))) {
+            'oui', 'o', 'yes', 'y', '1', 'vrai', 'true' => true,
+            '', 'non', 'n', 'no', '0', 'faux', 'false' => false,
+            default => null,
+        };
     }
 
     /**

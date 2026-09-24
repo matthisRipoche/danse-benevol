@@ -41,6 +41,7 @@ class MissionFactory extends Factory
             'name' => fake()->randomElement(self::PUBLIC_MISSIONS),
             'description' => fake()->sentence(),
             'is_public' => true,
+            'is_adult_only' => false,
             'default_capacity' => 5,
         ];
     }
@@ -53,6 +54,16 @@ class MissionFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'name' => fake()->randomElement(['Billetterie', 'Caisse']),
             'is_public' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that minor volunteers can neither book nor be assigned to the mission.
+     */
+    public function adultOnly(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_adult_only' => true,
         ]);
     }
 }
