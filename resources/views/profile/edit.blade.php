@@ -22,12 +22,7 @@
             <section class="rounded-2xl border border-sand-200 bg-white p-5 shadow-sm sm:p-6">
                 <h1 class="font-heading text-xl font-bold">Modifier mes informations</h1>
                 <p class="mt-1 mb-5 text-sm text-stone-600">
-                    Ton nom, ton téléphone et ta photo restent modifiables à tout moment.
-                    @if ($user->profile_locked_at)
-                        Ton adresse e-mail, elle, ne peut plus être changée que par un administrateur.
-                    @else
-                        Ton adresse e-mail sera verrouillée à la validation de ton planning.
-                    @endif
+                    Tu peux corriger tes informations jusqu'à la validation de ton planning. Elles seront ensuite verrouillées.
                 </p>
 
                 @if ($errors->any())
@@ -48,7 +43,6 @@
                         'user' => $user,
                         'photoUrl' => $user->photo_path ? route('profile.photo') : null,
                         'showMinorField' => false,
-                        'isEmailLocked' => (bool) $user->profile_locked_at,
                     ])
 
                     <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
