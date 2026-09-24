@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EditionController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Admin\MissionController;
@@ -61,6 +62,13 @@ Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/editions', [EditionController::class, 'index'])->name('editions.index');
+    Route::get('/editions/creer', [EditionController::class, 'create'])->name('editions.create');
+    Route::post('/editions', [EditionController::class, 'store'])->name('editions.store');
+    Route::get('/editions/{edition}/modifier', [EditionController::class, 'edit'])->name('editions.edit');
+    Route::put('/editions/{edition}', [EditionController::class, 'update'])->name('editions.update');
+    Route::post('/editions/{edition}/activer', [EditionController::class, 'activate'])->name('editions.activate');
 
     Route::get('/benevoles', [VolunteerController::class, 'index'])->name('volunteers.index');
     Route::get('/benevoles/{user}', [VolunteerController::class, 'show'])->name('volunteers.show');

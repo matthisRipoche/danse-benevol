@@ -14,9 +14,16 @@
         @include('admin.partials.nav')
 
         <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-            <h1 class="mb-6 font-heading text-2xl font-bold">
-                Tableau de bord <span class="text-stone-400">·</span> <span class="text-brand-500">{{ $edition->name }}</span>
-            </h1>
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <h1 class="font-heading text-2xl font-bold">
+                    Tableau de bord <span class="text-stone-400">·</span> <span class="text-brand-500">{{ $edition->name }}</span>
+                </h1>
+                <a href="{{ route('admin.editions.index') }}"
+                    class="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-sm ring-1 ring-sand-200 hover:bg-sand-100">
+                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    Gérer les éditions
+                </a>
+            </div>
 
             <div class="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
                 <div class="rounded-xl border border-sand-200 bg-white p-4">
