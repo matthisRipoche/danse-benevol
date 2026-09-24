@@ -158,3 +158,19 @@ test('a volunteer who leaves the under-18 box unchecked is not registered as a m
 
     expect(User::where('email', 'camille.dupont@example.com')->firstOrFail()->is_minor)->toBeFalse();
 });
+
+test('registration errors are shown in French with readable field names', function () {
+    $code = InvitationCode::factory()->for(Edition::factory())->create();
+
+    $response = $this->post('/inscription', validRegistrationPayload($code, [
+        'password' => 'abc',
+        'password_confirmation' => 'abcd',
+    ]));
+
+    $response->assertSessionHasErrors('password');
+
+    expect(session('errors')->get('password'))->toBe([
+        'La confirmation du champ mot de passe ne correspond pas.',
+        'Le champ mot de passe doit contenir au moins 8 caractères.',
+    ]);
+});
