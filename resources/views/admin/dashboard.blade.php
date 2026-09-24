@@ -18,6 +18,58 @@
                 Tableau de bord <span class="text-stone-400">·</span> <span class="text-brand-500">{{ $edition->name }}</span>
             </h1>
 
+            @include('admin.partials.flash')
+
+            @php
+                $registrationStatus = $edition->registrationStatus();
+                $toLocalInput = fn ($date) => $date?->copy()->timezone(config('app.display_timezone'))->format('Y-m-d\\TH:i');
+                $registrationBadges = [
+                    'open' => ['Ouvertes', 'bg-emerald-100 text-emerald-800'],
+                    'not_open' => ['Pas encore ouvertes', 'bg-amber-100 text-amber-800'],
+                    'closed' => ['Closes', 'bg-sand-100 text-stone-600'],
+                    'locked' => ['Suspendues', 'bg-red-100 text-red-800'],
+                ];
+                [$registrationLabel, $registrationBadgeClass] = $registrationBadges[$registrationStatus];
+            @endphp
+
+            <section class="mb-8 rounded-xl border border-sand-200 bg-white p-5">
+                <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="font-heading text-lg font-semibold">Inscriptions des bénévoles</h2>
+                        <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold {{ $registrationBadgeClass }}">{{ $registrationLabel }}</span>
+                    </div>
+                    <form method="POST" action="{{ route('admin.registration-window.toggle-lock') }}"
+                        onsubmit="return confirm('{{ $edition->is_registration_locked ? 'Rouvrir les inscriptions selon les dates prévues ?' : 'Suspendre les inscriptions ? Les plannings des bénévoles passeront en lecture seule.' }}');">
+                        @csrf
+                        <button type="submit" @class([
+                            'rounded-full px-4 py-2 text-sm font-semibold shadow-sm',
+                            'bg-brand-500 text-white hover:bg-brand-600' => $edition->is_registration_locked,
+                            'bg-white text-red-700 ring-1 ring-red-200 hover:bg-red-50' => ! $edition->is_registration_locked,
+                        ])>
+                            {{ $edition->is_registration_locked ? 'Rouvrir les inscriptions' : 'Suspendre les inscriptions' }}
+                        </button>
+                    </form>
+                </div>
+                <p class="mb-4 text-sm text-stone-500">
+                    En dehors de ces dates, ou pendant une suspension, les bénévoles voient leur planning sans pouvoir réserver, annuler ni valider. Heure de Paris ; une date vide laisse ce côté ouvert.
+                </p>
+                <form method="POST" action="{{ route('admin.registration-window.update') }}" class="flex flex-wrap items-end gap-3">
+                    @csrf
+                    @method('PUT')
+                    @foreach (['registration_opens_at' => 'Ouverture', 'registration_closes_at' => 'Fermeture'] as $windowField => $windowLabel)
+                        <div class="flex flex-col gap-1">
+                            <label for="{{ $windowField }}" class="text-sm font-medium text-stone-600">{{ $windowLabel }}</label>
+                            <input type="datetime-local" name="{{ $windowField }}" id="{{ $windowField }}"
+                                value="{{ old($windowField, $toLocalInput($edition->{$windowField})) }}"
+                                class="h-10 rounded-lg border border-sand-200 bg-white px-3 text-sm focus:border-brand-500 focus:ring-3 focus:ring-brand-500/15 focus:outline-none @error($windowField) border-red-400 @enderror">
+                        </div>
+                    @endforeach
+                    <button type="submit" class="h-10 rounded-full bg-white px-4 text-sm font-semibold text-stone-700 shadow-sm ring-1 ring-sand-200 hover:bg-sand-100">
+                        Enregistrer les dates
+                    </button>
+                </form>
+            </section>
+
             <div class="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
                 <div class="rounded-xl border border-sand-200 bg-white p-4">
                     <p class="text-sm text-stone-500">Codes émis</p>

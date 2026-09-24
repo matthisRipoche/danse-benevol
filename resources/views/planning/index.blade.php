@@ -15,6 +15,12 @@
             $reservedCount = $assignments->count();
             $maxSlots = $edition->max_slots_per_volunteer;
             $minSlots = $edition->min_slots_per_volunteer;
+            $isReadOnly = $isValidated || $registrationClosedMessage !== null;
+            $statusTitle = match (true) {
+                $isValidated => 'Planning validé',
+                $isReadOnly => 'Lecture seule',
+                default => 'Brouillon modifiable',
+            };
         @endphp
 
         @include('partials.volunteer-header')
@@ -50,9 +56,15 @@
                             @endif
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="font-semibold">{{ $isValidated ? 'Planning validé' : 'Brouillon modifiable' }}</p>
+                            <p class="font-semibold">{{ $statusTitle }}</p>
                             <p class="text-sm text-stone-500">
-                                {{ $isValidated ? 'Seul un administrateur peut le modifier.' : 'Libre à toi de changer avant de valider.' }}
+                                @if ($isValidated)
+                                    Seul un administrateur peut le modifier.
+                                @elseif ($isReadOnly)
+                                    Les inscriptions ne sont pas ouvertes en ce moment.
+                                @else
+                                    Libre à toi de changer avant de valider.
+                                @endif
                             </p>
                         </div>
                     </div>
@@ -83,6 +95,13 @@
             @if (session('error'))
                 <div class="mb-6 rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-700">
                     {{ session('error') }}
+                </div>
+            @endif
+
+            @if ($registrationClosedMessage && ! $isValidated && session('error') !== $registrationClosedMessage)
+                <div class="mb-6 flex items-start gap-2.5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+                    <svg class="mt-0.5 size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    <p>{{ $registrationClosedMessage }}</p>
                 </div>
             @endif
 
@@ -169,7 +188,7 @@
                                                     </span>
                                                 </div>
 
-                                                @unless ($isValidated)
+                                                @unless ($isReadOnly)
                                                     <div class="flex justify-end border-t border-sand-200/70 pt-3">
                                                         @if ($isMine)
                                                             <form method="POST" action="{{ route('planning.cancel', $missionSlot) }}">
@@ -224,7 +243,7 @@
                                             <span class="text-brand-500">{{ $assignment->missionSlot->mission->name }}</span>
                                         </p>
                                     </div>
-                                    @unless ($isValidated)
+                                    @unless ($isReadOnly)
                                         <form method="POST" action="{{ route('planning.cancel', $assignment->missionSlot) }}">
                                             @csrf
                                             @method('DELETE')
@@ -245,6 +264,8 @@
                                 <svg class="mt-0.5 size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
                                 <p>Ton planning est validé et verrouillé. Seul un administrateur peut le modifier désormais.</p>
                             </div>
+                        @elseif ($isReadOnly)
+                            <p class="mt-2 rounded-xl bg-amber-50 p-3.5 text-sm text-amber-900">{{ $registrationClosedMessage }}</p>
                         @else
                             @if ($isAwaitingMinorValidation)
                                 <p class="mt-2 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
@@ -282,7 +303,7 @@
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-3">
                 <div>
                     <p class="font-heading font-bold text-brand-500">{{ $reservedCount }} / {{ $maxSlots }} créneaux</p>
-                    <p class="text-xs text-stone-500">{{ $isValidated ? 'Planning validé' : 'Brouillon modifiable' }}</p>
+                    <p class="text-xs text-stone-500">{{ $statusTitle }}</p>
                 </div>
                 <a href="#recapitulatif" class="rounded-full bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-600">
                     Mon récapitulatif
@@ -290,7 +311,7 @@
             </div>
         </div>
 
-        @unless ($isValidated)
+        @unless ($isReadOnly)
             <dialog id="finalize-dialog" class="m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-sand-200 bg-white p-6 shadow-2xl backdrop:bg-[#1e1e24]/50 backdrop:backdrop-blur-sm sm:p-8">
                 <div class="mb-4 flex size-12 items-center justify-center rounded-full bg-brand-50 text-brand-500">
                     <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>

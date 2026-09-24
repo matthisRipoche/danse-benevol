@@ -68,6 +68,13 @@ return [
     'timezone' => 'UTC',
 
     /*
+    | Fuseau horaire dans lequel les admins saisissent et lisent les dates d'ouverture et de
+    | fermeture des inscriptions (le salon a lieu à Angers). Les dates restent stockées en UTC.
+    */
+
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Europe/Paris'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------

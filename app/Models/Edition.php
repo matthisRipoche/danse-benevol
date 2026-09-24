@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterface;
 use Database\Factories\EditionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -79,6 +80,44 @@ class Edition extends Model
             ->using(EditionVolunteer::class)
             ->withPivot(['is_validated', 'validated_at', 'badge_uid'])
             ->withTimestamps();
+    }
+
+    /**
+     * Where volunteers stand with the registration window: `locked` (suspended by an admin),
+     * `not_open` (before the opening date), `closed` (after the closing date) or `open`.
+     * A missing date leaves that side of the window open.
+     */
+    public function registrationStatus(): string
+    {
+        return match (true) {
+            $this->is_registration_locked => 'locked',
+            (bool) $this->registration_opens_at?->isFuture() => 'not_open',
+            (bool) $this->registration_closes_at?->isPast() => 'closed',
+            default => 'open',
+        };
+    }
+
+    /**
+     * Whether volunteers may currently book, cancel and validate their planning.
+     */
+    public function isRegistrationOpen(): bool
+    {
+        return $this->registrationStatus() === 'open';
+    }
+
+    /**
+     * The explanation shown to volunteers while their planning is read-only, or null when it is open.
+     */
+    public function registrationClosedMessage(): ?string
+    {
+        $format = fn (CarbonInterface $date) => $date->copy()->timezone(config('app.display_timezone'))->format('d/m/Y à H:i');
+
+        return match ($this->registrationStatus()) {
+            'locked' => "Les inscriptions sont momentanément suspendues par l'organisation : ton planning est en lecture seule.",
+            'not_open' => "Les inscriptions ouvriront le {$format($this->registration_opens_at)} : tu pourras alors réserver tes créneaux.",
+            'closed' => "Les inscriptions sont closes depuis le {$format($this->registration_closes_at)} : ton planning est en lecture seule. Contacte l'équipe pour tout changement.",
+            default => null,
+        };
     }
 
     /**

@@ -52,6 +52,7 @@ class PlanningController extends Controller
             'isValidated' => (bool) $editionVolunteer->pivot->is_validated,
             'isAwaitingMinorValidation' => $user->is_minor && ! $user->minor_validated_at,
             'isMinor' => $user->is_minor,
+            'registrationClosedMessage' => $edition->registrationClosedMessage(),
         ]);
     }
 
@@ -66,6 +67,10 @@ class PlanningController extends Controller
 
         if ($editionVolunteer->pivot->is_validated) {
             return back()->with('error', 'Ton planning est validé, il ne peut plus être modifié.');
+        }
+
+        if (! $edition->isRegistrationOpen()) {
+            return back()->with('error', $edition->registrationClosedMessage());
         }
 
         $missionSlot->loadMissing('timeSlot.eventDay', 'mission');
@@ -140,6 +145,10 @@ class PlanningController extends Controller
             return back()->with('error', 'Ton planning est validé, il ne peut plus être modifié.');
         }
 
+        if (! $edition->isRegistrationOpen()) {
+            return back()->with('error', $edition->registrationClosedMessage());
+        }
+
         $assignment = VolunteerAssignment::where('user_id', $user->id)
             ->where('mission_slot_id', $missionSlot->id)
             ->first();
@@ -164,6 +173,10 @@ class PlanningController extends Controller
 
         if ($editionVolunteer->pivot->is_validated) {
             return back()->with('error', 'Ton planning est déjà validé.');
+        }
+
+        if (! $edition->isRegistrationOpen()) {
+            return back()->with('error', $edition->registrationClosedMessage());
         }
 
         if ($user->is_minor && ! $user->minor_validated_at) {
