@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\RestrictedMissionController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\VolunteerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\ProfileController;
@@ -29,6 +31,16 @@ Route::middleware('guest')->group(function () {
     Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])
         ->middleware('throttle:6,1');
+
+    Route::get('/mot-de-passe-oublie', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/mot-de-passe-oublie', [PasswordResetLinkController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('password.email');
+
+    Route::get('/reinitialiser-mot-de-passe/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/reinitialiser-mot-de-passe', [NewPasswordController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('password.store');
 
     // Raccourci de connexion admin réservé au développement local — jamais actif en dehors de `local`.
     Route::post('/connexion/dev-admin', function () {
