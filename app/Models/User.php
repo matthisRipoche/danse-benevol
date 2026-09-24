@@ -103,6 +103,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Whether the user is registered as a volunteer for the given edition.
+     */
+    public function isRegisteredFor(Edition $edition): bool
+    {
+        return $this->editions()->where('editions.id', $edition->id)->exists();
+    }
+
+    /**
      * The route name this user should land on once authenticated.
      */
     public function homeRouteName(): string

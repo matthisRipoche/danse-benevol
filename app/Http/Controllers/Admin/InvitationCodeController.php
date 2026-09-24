@@ -95,7 +95,8 @@ class InvitationCodeController extends Controller
             $reason = match (true) {
                 Validator::make(['email' => $email], ['email' => ['required', 'string', 'email', 'max:255']])->fails() => 'Adresse e-mail invalide',
                 in_array($normalizedEmail, $seenEmails, true) => 'En double dans le fichier',
-                User::where('email', $email)->exists() => 'Un compte existe déjà avec cet e-mail',
+                User::where('email', $email)->where('role', 'admin')->exists() => "Adresse d'un compte administrateur",
+                (bool) User::where('email', $email)->first()?->isRegisteredFor($edition) => "Déjà inscrit(e) à l'édition en cours",
                 $edition->invitationCodes()->where('email', $email)->where('status', 'pending')->exists() => 'Un code est déjà en attente pour cet e-mail',
                 default => null,
             };

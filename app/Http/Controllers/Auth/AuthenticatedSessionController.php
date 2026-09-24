@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route($request->user()->homeRouteName());
+        return redirect()->intended(route($request->user()->homeRouteName()));
     }
 
     /**

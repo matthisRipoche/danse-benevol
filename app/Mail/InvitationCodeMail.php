@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\InvitationCode;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -37,11 +38,16 @@ class InvitationCodeMail extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
+        $code = $this->invitationCode->code;
+        $isReturningVolunteer = User::where('email', $this->invitationCode->email)->exists();
+
         return new Content(
             markdown: 'emails.invitation-code',
             with: [
-                'code' => $this->invitationCode->code,
-                'registerUrl' => route('register', ['code' => $this->invitationCode->code]),
+                'code' => $code,
+                'isReturningVolunteer' => $isReturningVolunteer,
+                'actionUrl' => $isReturningVolunteer ? route('edition.join', ['code' => $code]) : route('register', ['code' => $code]),
+                'editionName' => $this->invitationCode->edition->name,
                 'expiresAt' => $this->invitationCode->expires_at,
             ],
         );

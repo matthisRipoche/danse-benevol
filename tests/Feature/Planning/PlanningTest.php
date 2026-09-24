@@ -40,13 +40,22 @@ test('a registered volunteer sees only public missions with their gauge', functi
     $response->assertSee('Déconnexion');
 });
 
-test('a volunteer not registered for the active edition is forbidden', function () {
+test('a volunteer not registered for the active edition is sent to the join page', function () {
     Edition::factory()->create(['status' => 'active']);
     $volunteer = User::factory()->create();
 
     $response = $this->actingAs($volunteer)->get(route('planning.index'));
 
-    $response->assertForbidden();
+    $response->assertRedirect(route('edition.join'));
+});
+
+test('a volunteer not registered for the active edition still cannot book a slot', function () {
+    $edition = Edition::factory()->create(['status' => 'active']);
+    $timeSlot = TimeSlot::factory()->for(EventDay::factory()->for($edition), 'eventDay')->create(['position' => 1]);
+    $missionSlot = MissionSlot::factory()->for(Mission::factory()->for($edition), 'mission')->for($timeSlot, 'timeSlot')->create();
+    $volunteer = User::factory()->create();
+
+    $this->actingAs($volunteer)->post(route('planning.reserve', $missionSlot))->assertForbidden();
 });
 
 test('a volunteer can reserve an available slot as a draft', function () {

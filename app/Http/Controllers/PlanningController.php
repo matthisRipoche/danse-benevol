@@ -20,10 +20,15 @@ class PlanningController extends Controller
     /**
      * Display the volunteer's planning for the active edition.
      */
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         $user = $request->user();
         $edition = Edition::active();
+
+        if ($user->role === 'volunteer' && ! $user->isRegisteredFor($edition)) {
+            return redirect()->route('edition.join');
+        }
+
         $editionVolunteer = $this->editionVolunteerOrAbort($user, $edition);
 
         $days = EventDay::where('edition_id', $edition->id)
