@@ -61,7 +61,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 - [ ] ⬜ Exports PDF (plannings, listes par mission, fiches contact)
 - [x] ✅ Import Excel / CSV de candidats : création et envoi d'un code d'invitation par e-mail valide, rapport des lignes ignorées — `Admin\InvitationCodeController`
 - [ ] 🚧 Log d'audit horodaté des actions admin — branché sur les codes d'invitation, missions, jours et créneaux, postes restreints, profils, mineurs et exports ; entrées non modifiables ni supprimables, conservées 12 mois (`model:prune` quotidien via le service `scheduler`) ; pas encore d'UI de consultation (cf. fonctionnalités avancées)
-- [ ] ⬜ Gestion multi-éditions : création, archivage, consultation des éditions passées (le modèle `Edition` est déjà pensé multi-éditions, UI à faire)
+- [ ] 🚧 Gestion multi-éditions : création, archivage, consultation des éditions passées — page « Éditions » (`Admin\EditionController`) : création en brouillon avec copie facultative de la grille d'une édition précédente, modification, activation (archive l'édition active et révoque ses codes en attente) ; reste la réinscription des bénévoles des années précédentes et la consultation détaillée des éditions archivées
 
 ## Fonctionnalités avancées (post-MVP)
 
