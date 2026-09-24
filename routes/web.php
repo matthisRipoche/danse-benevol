@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\InvitationCodeController;
 use App\Http\Controllers\Admin\MissionController;
+use App\Http\Controllers\Admin\RegistrationWindowController;
 use App\Http\Controllers\Admin\RestrictedMissionController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\VolunteerController;
@@ -62,6 +63,8 @@ Route::post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::put('/inscriptions', [RegistrationWindowController::class, 'update'])->name('registration-window.update');
+    Route::post('/inscriptions/suspendre', [RegistrationWindowController::class, 'toggleLock'])->name('registration-window.toggle-lock');
 
     Route::get('/benevoles', [VolunteerController::class, 'index'])->name('volunteers.index');
     Route::get('/benevoles/{user}', [VolunteerController::class, 'show'])->name('volunteers.show');
