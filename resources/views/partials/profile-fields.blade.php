@@ -1,6 +1,6 @@
 {{--
     Personal information fields shared by the volunteer and admin edit forms.
-    Expects: $user, $photoUrl (current photo or null), $showMinorField (bool), $isEmailLocked (bool).
+    Expects: $user, $photoUrl (current photo or null), $showMinorField (bool).
 --}}
 @php
     $field = 'h-11 w-full rounded-lg border border-sand-200 bg-white px-3 focus:border-brand-500 focus:ring-3 focus:ring-brand-500/15 focus:outline-none';
@@ -21,14 +21,8 @@
 
 <div class="flex flex-col gap-1">
     <label for="email" class="text-sm font-medium text-stone-600">Adresse e-mail</label>
-    @if ($isEmailLocked)
-        <input type="email" id="email" value="{{ $user->email }}" disabled
-            class="{{ $field }} cursor-not-allowed bg-sand-50 text-stone-500">
-        <p class="text-xs text-stone-500">Verrouillée depuis la validation du planning : contacte un administrateur pour la changer.</p>
-    @else
-        <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required maxlength="255" autocomplete="email"
-            class="{{ $field }} @error('email') border-red-400 @enderror">
-    @endif
+    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required maxlength="255" autocomplete="email"
+        class="{{ $field }} @error('email') border-red-400 @enderror">
 </div>
 
 <div class="flex flex-col gap-1">

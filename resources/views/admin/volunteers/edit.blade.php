@@ -34,7 +34,6 @@
                             'user' => $volunteer,
                             'photoUrl' => $volunteer->photo_path ? route('admin.volunteers.photo', $volunteer) : null,
                             'showMinorField' => true,
-                            'isEmailLocked' => false,
                         ])
 
                         <button type="submit" class="h-11 w-full rounded-full bg-brand-500 px-6 font-semibold text-white shadow-sm hover:bg-brand-600 sm:w-fit">
@@ -46,7 +45,7 @@
                 <aside class="rounded-xl border border-sand-200 bg-white p-6 text-sm text-stone-600">
                     <h2 class="mb-2 font-heading text-lg font-semibold text-[#1e1e24]">Bon à savoir</h2>
                     <ul class="flex list-inside list-disc flex-col gap-2">
-                        <li>Le bénévole peut lui-même changer son nom, son téléphone et sa photo à tout moment. Une fois son planning validé, seul un admin peut changer son e-mail.</li>
+                        <li>Tu peux modifier un profil même verrouillé par la validation du planning.</li>
                         <li>La nouvelle adresse e-mail devient l'identifiant de connexion du bénévole : préviens-le.</li>
                         <li>La photo remplacée est supprimée du serveur.</li>
                     </ul>

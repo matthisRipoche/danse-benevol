@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Edition;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -94,33 +95,30 @@ test('a volunteer can keep their own email', function () {
         ->assertSessionHasNoErrors();
 });
 
-test('a locked profile still lets the volunteer edit their name, phone and photo', function () {
-    Storage::fake('local');
-    $volunteer = User::factory()->create(['profile_locked_at' => now(), 'email' => 'locked@example.fr']);
+test('a locked profile cannot be edited by the volunteer', function () {
+    $volunteer = User::factory()->create(['first_name' => 'Camille', 'profile_locked_at' => now()]);
 
     $this->actingAs($volunteer)
         ->get(route('profile.edit'))
-        ->assertOk()
-        ->assertSee('Verrouillée depuis la validation du planning');
+        ->assertRedirect(route('profile.show'))
+        ->assertSessionHas('error');
 
     $this->actingAs($volunteer)
-        ->put(route('profile.update'), validProfilePayload(['photo' => UploadedFile::fake()->image('new.jpg')]))
-        ->assertRedirect(route('profile.show'))
-        ->assertSessionHasNoErrors();
+        ->put(route('profile.update'), validProfilePayload())
+        ->assertForbidden();
 
-    $volunteer->refresh();
-    expect($volunteer->first_name)->toBe('Léa')
-        ->and($volunteer->last_name)->toBe('Martin')
-        ->and($volunteer->phone)->toBe('06 12 34 56 78');
-    Storage::disk('local')->assertExists($volunteer->photo_path);
+    expect($volunteer->fresh()->first_name)->toBe('Camille');
 });
 
-test('a locked profile keeps its email even if one is sent', function () {
-    $volunteer = User::factory()->create(['profile_locked_at' => now(), 'email' => 'locked@example.fr']);
+test('a locked profile shows the lock instead of the edit button', function () {
+    $volunteer = User::factory()->create(['profile_locked_at' => now()]);
+    $volunteer->editions()->attach(Edition::factory()->create(['status' => 'active'])->id);
 
-    $this->actingAs($volunteer)->put(route('profile.update'), validProfilePayload(['email' => 'new@example.fr']));
-
-    expect($volunteer->fresh()->email)->toBe('locked@example.fr');
+    $this->actingAs($volunteer)
+        ->get(route('profile.show'))
+        ->assertOk()
+        ->assertSee('Profil verrouillé')
+        ->assertDontSee(route('profile.edit'));
 });
 
 test('guests are redirected to the login page', function () {

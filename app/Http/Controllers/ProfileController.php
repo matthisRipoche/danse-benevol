@@ -49,10 +49,15 @@ class ProfileController extends Controller
     }
 
     /**
-     * Display the form to edit the volunteer's personal information.
+     * Display the form to edit the volunteer's personal information, until the profile is locked.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request): View|RedirectResponse
     {
+        if ($request->user()->profile_locked_at) {
+            return redirect()->route('profile.show')
+                ->with('error', 'Ton profil est verrouillé depuis la validation de ton planning. Contacte un administrateur pour le modifier.');
+        }
+
         return view('profile.edit', ['user' => $request->user()]);
     }
 

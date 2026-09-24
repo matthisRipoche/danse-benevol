@@ -215,11 +215,18 @@
                     <section class="rounded-2xl border border-sand-200 bg-white p-5 shadow-sm sm:p-6">
                         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                             <h2 class="font-heading text-xl font-bold">Mes informations</h2>
-                            <a href="{{ route('profile.edit') }}"
-                                class="inline-flex items-center gap-1.5 rounded-full border border-sand-200 bg-white px-3 py-1.5 text-sm font-semibold text-brand-500 shadow-sm hover:bg-sand-50 print:hidden">
-                                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                Modifier
-                            </a>
+                            @if ($user->profile_locked_at)
+                                <span class="inline-flex items-center gap-1 rounded-full bg-sand-100 px-2.5 py-1 text-xs font-semibold text-stone-600">
+                                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                                    Profil verrouillé
+                                </span>
+                            @else
+                                <a href="{{ route('profile.edit') }}"
+                                    class="inline-flex items-center gap-1.5 rounded-full border border-sand-200 bg-white px-3 py-1.5 text-sm font-semibold text-brand-500 shadow-sm hover:bg-sand-50 print:hidden">
+                                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                    Modifier
+                                </a>
+                            @endif
                         </div>
 
                         <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -251,7 +258,7 @@
 
                         @if ($user->profile_locked_at)
                             <p class="mt-4 rounded-xl bg-sand-50 p-3 text-sm text-stone-600">
-                                Depuis la validation de ton planning, ton adresse e-mail ne peut plus être changée que par un administrateur.
+                                Ton profil est verrouillé depuis la validation de ton planning. Pour toute correction, contacte un administrateur.
                             </p>
                         @endif
                     </section>
