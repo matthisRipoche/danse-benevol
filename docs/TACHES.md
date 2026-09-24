@@ -23,6 +23,7 @@ Légende : ✅ Fait — 🚧 Partiellement fait (le détail précise ce qui manq
 
 - [x] ✅ Génération/gestion des codes d'invitation côté admin (création unitaire par e-mail + liste + révocation ; génération en masse non couverte)
 - [x] ✅ Inscription strictement conditionnée par un code d'invitation valide
+- [x] ✅ Réinscription d'un bénévole d'une édition précédente : le code d'invitation rattache son compte existant à la nouvelle édition (`/rejoindre`), profil déverrouillé et validation « mineur » à refaire
 - [x] ✅ Formulaire d'inscription (nom, prénom, e-mail, téléphone, mot de passe, photo)
 - [x] ✅ Upload de la photo (dépend de la décision de stockage ci-dessus) — JPG ou PNG, 6 Mo maximum
 - [x] ✅ Contrôle applicatif d'unicité du compte (l'e-mail est déjà `UNIQUE` en base)

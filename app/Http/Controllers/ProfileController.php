@@ -17,10 +17,15 @@ class ProfileController extends Controller
     /**
      * Display the volunteer's profile, badge and validated route sheet for the active edition.
      */
-    public function show(Request $request, QrCodeSvg $qrCodeSvg): View
+    public function show(Request $request, QrCodeSvg $qrCodeSvg): View|RedirectResponse
     {
         $user = $request->user();
         $edition = Edition::active();
+
+        if ($user->role === 'volunteer' && ! $user->isRegisteredFor($edition)) {
+            return redirect()->route('edition.join');
+        }
+
         $editionVolunteer = $user->editions()->where('editions.id', $edition->id)->first();
 
         abort_if(! $editionVolunteer, 403, "Tu n'es pas inscrit à cette édition.");

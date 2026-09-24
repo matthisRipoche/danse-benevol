@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\JoinEditionController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
@@ -101,6 +102,11 @@ Route::middleware(['auth', 'can:admin'])->prefix('admin')->name('admin.')->group
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/rejoindre', [JoinEditionController::class, 'create'])->name('edition.join');
+    Route::post('/rejoindre', [JoinEditionController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('edition.join.store');
+
     Route::get('/mon-planning', [PlanningController::class, 'index'])->name('planning.index');
     Route::post('/mon-planning/creneaux/{missionSlot}', [PlanningController::class, 'reserve'])->name('planning.reserve');
     Route::delete('/mon-planning/creneaux/{missionSlot}', [PlanningController::class, 'cancel'])->name('planning.cancel');

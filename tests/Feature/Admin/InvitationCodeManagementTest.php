@@ -61,19 +61,56 @@ test('creating an invitation code requires a valid email', function () {
     $response->assertSessionHasErrors('email');
 });
 
-test('an invitation code cannot be created for an email that already has an account', function () {
+test('an invitation code cannot be created for a volunteer already registered for the active edition', function () {
     Mail::fake();
 
     $admin = User::factory()->admin()->create();
-    Edition::factory()->create(['status' => 'active']);
-    User::factory()->create(['email' => 'candidat@example.com']);
+    $edition = Edition::factory()->create(['status' => 'active']);
+    User::factory()->create(['email' => 'candidat@example.com'])->editions()->attach($edition->id);
 
     $response = $this->actingAs($admin)->post(route('admin.invitation-codes.store'), [
         'email' => 'candidat@example.com',
     ]);
 
-    $response->assertSessionHasErrors('email');
+    $response->assertSessionHasErrors(['email' => "Ce bénévole est déjà inscrit à l'édition en cours."]);
     Mail::assertNothingSent();
+});
+
+test('an invitation code cannot be created for an admin account', function () {
+    Mail::fake();
+
+    $admin = User::factory()->admin()->create(['email' => 'admin@example.com']);
+    Edition::factory()->create(['status' => 'active']);
+
+    $this->actingAs($admin)
+        ->post(route('admin.invitation-codes.store'), ['email' => 'admin@example.com'])
+        ->assertSessionHasErrors('email');
+
+    Mail::assertNothingSent();
+});
+
+test('a volunteer from a previous edition can be invited and receives a « welcome back » email', function () {
+    Mail::fake();
+
+    $admin = User::factory()->admin()->create();
+    $previous = Edition::factory()->create(['status' => 'archived']);
+    Edition::factory()->create(['status' => 'active', 'name' => 'Salon de la Danse 2028']);
+    User::factory()->create(['email' => 'ancien@example.com'])->editions()->attach($previous->id);
+
+    $this->actingAs($admin)
+        ->post(route('admin.invitation-codes.store'), ['email' => 'ancien@example.com'])
+        ->assertSessionHasNoErrors();
+
+    $code = InvitationCode::where('email', 'ancien@example.com')->firstOrFail();
+
+    Mail::assertQueued(InvitationCodeMail::class, function (InvitationCodeMail $mail) use ($code) {
+        $html = $mail->render();
+
+        return str_contains($html, 'Content de te revoir')
+            && str_contains($html, 'Salon de la Danse 2028')
+            && str_contains($html, e(route('edition.join', ['code' => $code->code])))
+            && ! str_contains($html, 'Créer mon compte');
+    });
 });
 
 test('an invitation code cannot be created for an email with an already pending code on the edition', function () {

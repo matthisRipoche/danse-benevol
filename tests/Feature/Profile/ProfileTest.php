@@ -67,10 +67,18 @@ test('a volunteer whose planning is not validated sees a pending badge without a
         ->assertDontSee('SDLD-');
 });
 
-test('a user not registered for the active edition cannot see the profile page', function () {
+test('a volunteer not registered for the active edition is sent to the join page from the profile', function () {
     Edition::factory()->create(['status' => 'active']);
 
     $this->actingAs(User::factory()->create())
+        ->get(route('profile.show'))
+        ->assertRedirect(route('edition.join'));
+});
+
+test('an admin without volunteer registration still cannot see the volunteer profile page', function () {
+    Edition::factory()->create(['status' => 'active']);
+
+    $this->actingAs(User::factory()->admin()->create())
         ->get(route('profile.show'))
         ->assertForbidden();
 });

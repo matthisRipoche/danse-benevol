@@ -62,23 +62,27 @@ test('the import skips invalid, duplicate and already invited e-mails and report
 
     $admin = User::factory()->admin()->create();
     $edition = Edition::factory()->create(['status' => 'active']);
-    User::factory()->create(['email' => 'inscrit@example.com']);
+    User::factory()->create(['email' => 'inscrit@example.com'])->editions()->attach($edition->id);
+    User::factory()->create(['email' => 'ancien@example.com'])->editions()->attach(Edition::factory()->create(['status' => 'archived'])->id);
+    User::factory()->admin()->create(['email' => 'orga@example.com']);
     InvitationCode::factory()->for($edition)->create(['email' => 'attente@example.com']);
 
     $response = $this->actingAs($admin)->post(route('admin.invitation-codes.import.store'), [
-        'file' => candidatesCsv("nouveau@example.com\npas-un-email\nNOUVEAU@example.com\ninscrit@example.com\nattente@example.com\n"),
+        'file' => candidatesCsv("nouveau@example.com\npas-un-email\nNOUVEAU@example.com\ninscrit@example.com\nattente@example.com\nancien@example.com\norga@example.com\n"),
     ]);
 
-    $response->assertSessionHas('status', '1 code(s) créé(s) et envoyé(s).');
+    $response->assertSessionHas('status', '2 code(s) créé(s) et envoyé(s).');
     $response->assertSessionHas('importSkipped', [
         ['line' => 2, 'value' => 'pas-un-email', 'reason' => 'Adresse e-mail invalide'],
         ['line' => 3, 'value' => 'NOUVEAU@example.com', 'reason' => 'En double dans le fichier'],
-        ['line' => 4, 'value' => 'inscrit@example.com', 'reason' => 'Un compte existe déjà avec cet e-mail'],
+        ['line' => 4, 'value' => 'inscrit@example.com', 'reason' => "Déjà inscrit(e) à l'édition en cours"],
         ['line' => 5, 'value' => 'attente@example.com', 'reason' => 'Un code est déjà en attente pour cet e-mail'],
+        ['line' => 7, 'value' => 'orga@example.com', 'reason' => "Adresse d'un compte administrateur"],
     ]);
 
-    expect(InvitationCode::where('email', 'attente@example.com')->count())->toBe(1);
-    Mail::assertQueued(InvitationCodeMail::class, 1);
+    expect(InvitationCode::where('email', 'attente@example.com')->count())->toBe(1)
+        ->and(InvitationCode::where('email', 'ancien@example.com')->exists())->toBeTrue();
+    Mail::assertQueued(InvitationCodeMail::class, 2);
 });
 
 test('the import rejects a file that is neither Excel nor CSV', function () {

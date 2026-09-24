@@ -32,6 +32,17 @@
                     </div>
                 @endif
 
+                @if ($hasExistingAccount)
+                    <div class="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+                        <p class="font-semibold">Tu as déjà un compte bénévole.</p>
+                        <p class="mt-1">Pas besoin d'en créer un nouveau : connecte-toi avec ton compte habituel pour rejoindre cette édition avec ton code.</p>
+                        <a href="{{ route('edition.join', ['code' => $code]) }}"
+                            class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-4 py-2 font-semibold text-white shadow-sm hover:bg-brand-600">
+                            Me connecter et rejoindre l'édition
+                        </a>
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="flex flex-col gap-6">
                     @csrf
 

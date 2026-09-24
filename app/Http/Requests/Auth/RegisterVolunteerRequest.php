@@ -38,6 +38,18 @@ class RegisterVolunteerRequest extends FormRequest
     }
 
     /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'email.unique' => "Un compte existe déjà avec cette adresse e-mail : connecte-toi, puis saisis ton code pour rejoindre l'édition.",
+        ];
+    }
+
+    /**
      * Configure the validator instance.
      */
     public function withValidator(Validator $validator): void

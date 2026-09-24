@@ -20,8 +20,12 @@ class RegisteredUserController extends Controller
      */
     public function create(Request $request): View
     {
+        $code = $request->query('code');
+        $invitedEmail = $code ? InvitationCode::where('code', $code)->value('email') : null;
+
         return view('auth.register', [
-            'code' => $request->query('code'),
+            'code' => $code,
+            'hasExistingAccount' => $invitedEmail && User::where('email', $invitedEmail)->exists(),
         ]);
     }
 
